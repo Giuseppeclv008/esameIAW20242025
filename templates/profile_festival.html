@@ -1,0 +1,83 @@
+{% extends "base_festival.html" %}
+
+{% block title %}My Profile{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-header">
+                    User Information
+                </div>
+                <div class="card-body">
+                    <h5 class="card-title">{{ current_user.nickname }}</h5>
+                    <p class="card-text">
+                        <strong>Email:</strong> {{ current_user.email }}<br>
+                        <strong>Role:</strong> {{ current_user.role.capitalize() }}
+                        {% if current_user.role == 'organizer' %}
+                        <br><strong>Organizer ID:</strong> {{ current_user.id }}
+                        {% endif %}
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-8">
+            <!-- SEZIONE PER I PARTECIPANTI -->
+            {% if current_user.role == 'participant' %}
+            <h3 style="font-family: 'Playfair Display', serif;">My Ticket</h3>
+            {% if user_ticket %}
+            <div class="card bg-light mb-3">
+                <div class="card-header">{{ user_ticket.ticket_type_name }}</div>
+                <div class="card-body">
+                    <h5 class="card-title">Valid for: {{ user_ticket.valid_days_list | join(', ') }}</h5>
+                    <p class="card-text"><small class="text-muted">Purchased on: {{ user_ticket.purchase_date.split('
+                            ')[0] }}</small></p>
+                </div>
+            </div>
+            {% else %}
+            <p style="font-family: 'Playfair Display', serif;">You haven't purchased a ticket yet.</p>
+            <a href="{{ url_for('buy_ticket') }}" class="btn btn-success">Buy Ticket Now!</a>
+            {% endif %}
+            {% elif current_user.role == 'organizer' %}
+            <h3 style="font-family: 'Playfair Display', serif;">My Managed Performances</h3>
+            <a href="{{ url_for('manage_performance') }}" class="btn mynewperfbutton mb-3">Add New Performance</a>
+            {% if organizer_performances %}
+            <div class="list-group">
+                {% for perf in organizer_performances %}
+                <div
+                    class="list-group-item list-group-item-action flex-column align-items-start {% if not perf.is_published %}list-group-item-warning{% endif %}">
+                    <div class="d-flex w-100 justify-content-between">
+                        <h5 class="mb-1">{{ perf.artist_name }} <small>({{ perf.day }} at {{ perf.start_time }})</small>
+                        </h5>
+                        <small>{{ perf.stage_name }}</small>
+                    </div>
+                    <p class="mb-1">{{ perf.description[:100] }}{% if perf.description|length > 100 %}...{% endif %}</p>
+                    <small class="text-muted">Genre: {{ perf.genre }} | Duration: {{ perf.duration_minutes }}
+                        mins</small>
+                    <div class="mt-2">
+                        <a href="{{ url_for('performance_detail', perf_id=perf.id) }}"
+                            class="btn btn-sm myviewbutton">View</a>
+                        {% if not perf.is_published %}
+                        <a href="{{ url_for('manage_performance', perf_id=perf.id) }}"
+                            class="btn btn-sm myeditbutton">Edit</a>
+                        <form action="{{ url_for('publish_performance', perf_id=perf.id) }}" method="POST"
+                            style="display: inline;">
+                            <button type="submit" class="btn btn-sm mybuttoncolors">Publish</button>
+                        </form>
+                        {% else %}
+                        <span class="badge bg-success">Published</span>
+                        {% endif %}
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            {% else %}
+            <p>You haven't created any performances yet.</p>
+            {% endif %}
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

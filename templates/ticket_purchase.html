@@ -1,0 +1,57 @@
+{% extends "base_festival.html" %}
+
+{% block title %}Buy Ticket{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2 style="font-family: 'Playfair Display', serif;">Purchase Festival Ticket</h2>
+    <p class="lead" style="font-family: 'Playfair Display', serif;">Choose your festival experience. You can only purchase one type of ticket.</p>
+    <hr>
+
+    <form method="POST" action="{{ url_for('buy_ticket') }}">
+        <div class="mb-3">
+            <label for="ticket_type" class="form-label fs-5" style="font-family: 'Playfair Display', serif;">Select Ticket Type:</label>
+            <select class="form-select form-select-lg" id="ticket_type" name="ticket_type" required>
+                <option value="" disabled {% if not (form_values and form_values.ticket_type) %}selected{% endif %}>---
+                    Choose Ticket ---</option>
+                {% for type_key, type_info in TICKET_TYPES_CONFIG.items() %}
+                <option value="{{ type_key }}" {% if form_values and form_values.ticket_type==type_key %}selected{%
+                    endif %}>{{ type_info.name }}</option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <div id="daily_selection_div" class="mb-3 p-3 border rounded">
+            <label class="form-label fs-5"><strong>If choosing Daily Ticket - Select Day:</strong></label><br>
+            {% for day_opt in FESTIVAL_DAYS %}
+            <div class="form-check form-check-inline">
+                <input class="form-check-input" type="radio" name="days_daily" id="day_daily_{{ day_opt|lower }}"
+                    value="{{ day_opt }}" {% if form_values and form_values.ticket_type=='daily' and
+                    form_values.get('days_daily')==day_opt %}checked{% endif %}>
+                <label class="form-check-label" for="day_daily_{{ day_opt|lower }}">{{ day_opt }}</label>
+            </div>
+            {% endfor %}
+        </div>
+
+        <div id="2day_selection_div" class="mb-3 p-3 border rounded">
+            <label class="form-label fs-5"><strong>If choosing 2-Day Pass - Select Two Consecutive
+                    Days:</strong></label><br>
+            {% for day_opt in FESTIVAL_DAYS %}
+            <div class="form-check form-check-inline">
+                <input class="form-check-input" type="checkbox" name="days_2day" id="day_2day_{{ day_opt|lower }}"
+                    value="{{ day_opt }}" {% if form_values and form_values.ticket_type=='2-day' and day_opt in
+                    form_values.getlist('days_2day') %}checked{% endif %}>
+                <label class="form-check-label" for="day_2day_{{ day_opt|lower }}">{{ day_opt }}</label>
+            </div>
+            {% endfor %}
+        </div>
+
+        <div id="full_pass_info" class="alert alert-info">
+            The Full Pass grants access to all three festival days: {{ FESTIVAL_DAYS|join(', ') }}.
+            <br><em>No specific day selection is needed if you choose this option.</em>
+        </div>
+
+        <button type="submit" class="btn btn-success btn-lg mt-3" id="buy_button">Purchase Ticket</button>
+    </form>
+</div>
+{% endblock %}

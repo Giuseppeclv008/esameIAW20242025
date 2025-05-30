@@ -1,0 +1,224 @@
+html,
+body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+}
+
+.festival-map-container {
+    height: 450px;
+    width: 100%;
+    border: 1px solid #ccc;
+    border-radius: 0.375rem;
+    box-shadow: 0 .125rem .25rem rgba(0, 0, 0, .075);
+
+}
+
+body {
+    min-height: 100vh;
+}
+
+.myprofileicon {
+    z-index: 1030;
+}
+
+main,
+main.container {
+    flex: 1;
+    padding: 1rem;
+    padding-bottom: 100px;
+}
+
+/* Footer styling */
+footer.footer {
+    flex-shrink: 0;
+    height: 60px;
+    background-color: #e8ddd5;
+    padding: 1rem 0;
+    text-align: center;
+    border-top: 1px solid #ccc;
+}
+
+
+/* Card styling */
+.card {
+    transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+.card-img-top {
+    height: 200px;
+    /* Or your preferred height */
+    object-fit: cover;
+    /* Ensures the image covers the area nicely */
+}
+
+.card-title {
+    font-weight: bold;
+}
+
+.card-footer {
+    background-color: #f8f9fa;
+    /* Light background for footer */
+    border-top: 1px solid #dee2e6;
+}
+
+/* Ensure dropdowns in navbar are aligned well */
+.navbar .dropdown-menu {
+    margin-top: 0.5rem;
+    /* Adjust as needed */
+}
+
+/* Sticky top for header */
+header.sticky-top {
+    z-index: 1030;
+    /* Ensure it's above other content but below modals if any */
+}
+
+/* Responsive image in performance detail */
+.performance-detail-img {
+    max-width: 100%;
+    height: auto;
+    border-radius: .25rem;
+    box-shadow: 0 .125rem .25rem rgba(0, 0, 0, .075);
+}
+
+/* Progress bar text visibility */
+.progress-bar {
+    color: #212529;
+    /* Dark text for better readability on light progress bars */
+    font-weight: bold;
+}
+
+.bg-success .progress-bar,
+.bg-danger .progress-bar {
+    /* For darker backgrounds, lighter text */
+    color: #e8ddd5;
+}
+
+
+/* Add some padding for flashed messages */
+.alert {
+    margin-top: 1rem;
+}
+
+/* Adjust list group item actions for better hover */
+.list-group-item-action:hover,
+.list-group-item-action:focus {
+    background-color: #e8ddd5;
+    /* Slightly darker hover */
+}
+
+/* Buttons section */
+.myeditbutton,
+.myclearbutton {
+    background-color: #92a2c6;
+    border: #3e7adb;
+    color: #284277;
+}
+
+.myeditbutton:hover,
+.myclearbutton:hover {
+    background-color: #654069;
+    border: #654069;
+    color: #fff4e2;
+}
+
+.myviewbutton {
+    background-color: #3e7adb;
+    border: none;
+    color: #0c1163;
+}
+
+.myviewbutton:hover {
+    background-color: #fc8b01;
+    border: #654069;
+    color: #0c1163;
+}
+
+.mynewperfbutton {
+    background-color: #56a69d;
+    border: none;
+    color: #0c1163;
+}
+
+.mynewperfbutton:hover {
+    background-color: #414c62;
+    border: #414c62;
+    color: #ede8e4;
+}
+
+.myhoveringbutton {
+    background-color: #e79801;
+    border: none;
+    border-radius: 50%;
+    bottom: 30px;
+    color: #ffffff;
+    cursor: pointer;
+    height: 60px;
+    position: fixed;
+    right: 30px;
+    text-align: center;
+    text-decoration: none;
+    vertical-align: middle;
+    width: 60px;
+    z-index: 1030;
+    /* Ensure it stays above other content */
+}
+
+.mybuttoncolors {
+    background-color: #e79801;
+    border-color: #e8ddd5;
+    color: #ffffff
+}
+
+.myhoveringbutton:hover,
+.btn-outline:hover,
+.mybuttoncolors:hover {
+    background-color: #d9b786;
+    border-color: #d9b786;
+    color: #4f5061;
+    /* Colore del testo scuro per contrasto su hover */
+}
+
+.unreg_btn {
+
+    --bs-btn-padding-y: .25rem;
+    --bs-btn-padding-x: .5rem;
+    --bs-btn-font-size: .75rem;
+}
+
+
+
+.btn-outline {
+    border-color: #e79801;
+    color: #e79801;
+    /* Colore del testo per lo stato normale */
+    /* text-decoration: solid; -> Nota: 'solid' non è un valore standard per text-decoration. Potresti volerlo rimuovere o cambiarlo con 'none', 'underline', ecc. */
+}
+
+
+/* Padding-top personalizzato per il main in base alla dimensione dello schermo */
+@media (max-width: 576px) {
+    main {
+        padding-top: 240px !important;
+    }
+}
+
+@media (min-width: 577px) and (max-width: 768px) {
+    main {
+        padding-top: 200px !important;
+    }
+}
+
+@media (min-width: 769px) {
+    main {
+        padding-top: 100px;
+    }
+}

@@ -1,0 +1,275 @@
+{% extends "base_festival.html" %}
+
+{% block title %}Home{% endblock %}
+
+{% block content %}
+<!-- CAROSELLO IMMAGINI -->
+<!-- i | funzionano come le pipe in bash, sono dei filtri, assegno a carousel_perfromances quello che ho in perfromances, ma prima filtro sulle perfromance
+ che sono pubblicate, poi su quelle che hanno un immagine - previene il caso in cui un immagine venga a mancare - infine list trasforma l'oggetto ottenuto da selectattribute in una lista  -->
+{% set carousel_performances = performances | selectattr('is_published') | selectattr('image_path') | list %}
+<!-- se la lista creata qui sopra è presente mostro le immagini nel carosello -->
+{% if carousel_performances %} 
+<div class="row mb-4">
+    <div class="col-12">
+        <div id="performanceCarousel" class="carousel slide shadow-sm rounded" data-bs-ride="carousel">
+            <div class="carousel-indicators">
+                {% for perf_item in carousel_performances %}
+                <button type="button" data-bs-target="#performanceCarousel" data-bs-slide-to="{{ loop.index0 }}"
+                    class="{{ 'active' if loop.first else '' }}" aria-current="{{ 'true' if loop.first else 'false' }}"
+                    aria-label="Slide {{ loop.index }}"></button>
+                {% endfor %}
+            </div>
+            <div class="carousel-inner rounded" style="max-height: 450px;">
+                {% for perf_item in carousel_performances %}
+                <div class="carousel-item {{ 'active' if loop.first else '' }}">
+                    <img src="{{ url_for('static', filename=perf_item.image_path) }}" class="d-block w-100"
+                        alt="{{ perf_item.artist_name }}" style="object-fit: cover; height: 100%; max-height: 450px;">
+                    <div class="carousel-caption d-none d-md-block bg-dark bg-opacity-50 p-2 rounded">
+                        <h5 style="font-family: 'Playfair Display', serif;">{{ perf_item.artist_name }}</h5>
+                        <p>{{ perf_item.genre }} - {{ perf_item.day }} at {{ perf_item.start_time }}</p>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            <button class="carousel-control-prev" type="button" data-bs-target="#performanceCarousel"
+                data-bs-slide="prev">
+                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Previous</span>
+            </button>
+            <button class="carousel-control-next" type="button" data-bs-target="#performanceCarousel"
+                data-bs-slide="next">
+                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Next</span>
+            </button>
+        </div>
+    </div>
+</div>
+{% else %}
+
+{% endif %}
+
+
+<!-- Pulsante Filtri per Dispositivi Mobili -->
+<div class="d-grid gap-2 d-lg-none mb-3 mt-3"> <!-- Modificato: d-lg-none nasconde su schermi grandi e superiori -->
+    <button class="btn  mybuttoncolors" type="button" data-bs-toggle="modal" data-bs-target="#filterModal">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-filter me-1"
+            viewBox="0 0 16 16">
+            <path
+                d="M6 10.5a.5.5 0 0 1 .5-.5h3a.5.5 0 0 1 0 1h-3a.5.5 0 0 1-.5-.5m-2-3a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7a.5.5 0 0 1-.5-.5m-2-3a.5.5 0 0 1 .5-.5h11a.5.5 0 0 1 0 1h-11a.5.5 0 0 1-.5-.5" />
+        </svg>
+        Filter Performances
+    </button>
+</div>
+
+<!-- Modale per i Filtri per dispositivi piccoli -->
+<div class="modal fade" id="filterModal" tabindex="-1" aria-labelledby="filterModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-scrollable"> <!-- modal-dialog-scrollable per contenuti lunghi -->
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="filterModalLabel" style="font-family: 'Playfair Display', serif;">Filter
+                    Performances</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form method="GET" action="{{ url_for('home') }}">
+                    <div class="mb-3">
+                        <label for="modal_day_filter" class="form-label">Giorno:</label>
+                        <select name="day" id="modal_day_filter" class="form-select">
+                            <option value="">Tutti i Giorni</option>
+                            {% for day_opt in FESTIVAL_DAYS %}
+                            <option value="{{ day_opt }}" {% if selected_day==day_opt %}selected{% endif %}>{{ day_opt
+                                }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="modal_stage_filter" class="form-label">Palco:</label>
+                        <select name="stage" id="modal_stage_filter" class="form-select">
+                            <option value="">Tutti i Palchi</option>
+                            {% for stage_opt in FESTIVAL_STAGES %}
+                            <option value="{{ stage_opt }}" {% if selected_stage==stage_opt %}selected{% endif %}>{{
+                                stage_opt }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="modal_genre_filter" class="form-label">Genere:</label>
+                        <input type="text" name="genre" id="modal_genre_filter" class="form-control"
+                            placeholder="Es. Rock, Electronic" value="{{ selected_genre or '' }}">
+                    </div>
+                    <div class="d-grid gap-2">
+                        <button type="submit" class="btn mybuttoncolors">Filter</button>
+                        <a href="{{url_for('home')}}" class="btn myclearbutton">Clear Filters</a>  
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-lg-3 d-none d-lg-block"> <!-- Nascondi questo elemento su schermi piccoli -->
+        <!-- POSITION STICKY PERMETTE DI AVERE IL FILTRO FERMO CON LO SCORRIMENTO -->
+        <!-- FILTRO -->
+        <div class="position-sticky" style="top: 100px;">
+            <h4 style="font-family: 'Playfair Display', serif;">Filter Performances</h4>
+            <!-- UTILIZZO UN METHOD GET PERCHE I DATI DI QUESTO FORM MI SEVONO SOLAMENTE PER FILTRARE, NON VERRANNO USATI PER AGGIUNGERE DATI O MODIFACRE IL DATABASE -->
+            <form method="GET" action="{{ url_for('home') }}">
+                <div class="mb-3">
+                    <label for="day" class="form-label">Day</label>
+                    <select name="day" id="day" class="form-select">
+                        <option value="">All Days</option>
+                        {% for day_opt in FESTIVAL_DAYS %}
+                        <!-- QUESTI FRAMMENTI DI JINJA CON GLI IF SERVONO PER MANTENERE LE SELEZIONI FATTE PRIMA DEL SUBMIT -->
+                        <option value="{{ day_opt }}" {% if selected_day==day_opt %}selected{% endif %}>{{ day_opt }}
+                        </option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="mb-3">
+                    <label for="stage" class="form-label">Stage</label>
+                    <select name="stage" id="stage" class="form-select">
+                        <option value="">All Stages</option>
+                        {% for stage_opt in FESTIVAL_STAGES %}
+                        <option value="{{ stage_opt }}" {% if selected_stage==stage_opt %}selected{% endif %}>{{
+                            stage_opt
+                            }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="mb-3">
+                    <label for="genre" class="form-label">Genre</label>
+                    <input type="text" name="genre" id="genre" class="form-control" value="{{ selected_genre or '' }}"
+                        placeholder="e.g., Rock, Electronic">
+                </div>
+                <button type="submit" class="btn mybuttoncolors">Filter</button>
+                <a href="{{url_for('home')}}" class="btn myclearbutton">Clear Filters</a>  
+            </form>
+        </div>
+    </div>
+    <!-- PERFORMANCE LIST -->
+    <div class="col-12 col-lg-9">
+        <h2 style="font-family: 'Playfair Display', serif;">Upcoming Performances</h2>
+        <!-- check for elements in performances -->
+        {% if performances %}
+        <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+            <!-- Loop in perfromances e crea cards con info performance -->
+            {% for perf in performances %}
+            <div class="col">
+                <!-- se una performance non è pubblicata un organizzatore la vede con un bordo evidenziato -->
+                {% if current_user.is_authenticated and current_user.role == 'organizer' and not perf.is_published %}
+                <!-- SEGMENTO DELLA SINGOLA CARD RELATIVA ALLE PERFORMANCE NON PUBBLICATE, VISIBILE AGLI ORGANIZZATORI -->
+                <div class="card h-100 {% if not perf.is_published %}border-warning border-2{% endif %}">
+                    <img src="{{ url_for('static', filename=perf.image_path or 'images/logo/LogoFestivalDelTacco.jpeg') }}"
+                        class="card-img-top" alt="{{ perf.artist_name }}">
+                    <div class="card-body">
+                        <h5 class="card-title" style="font-family: 'Playfair Display', serif;">{{ perf.artist_name }}
+                        </h5>
+                        <h6 class="card-subtitle mb-2 text-muted">{{ perf.genre }}</h6>
+                        <p class="card-text">
+                            <strong>Day:</strong> {{ perf.day }}<br>
+                            <strong>Time:</strong> {{ perf.start_time }} ({{ perf.duration_minutes }} mins)<br>
+                            <strong>Stage:</strong> {{ perf.stage_name }}
+                        </p>
+
+                        <p class="text-warning fw-bold"><small>DRAFT - Not Visible to Public</small></p>
+
+                    </div>
+                    <div class="card-footer">
+                        <a href="{{ url_for('performance_detail', perf_id=perf.id) }}"
+                            class="btn btn-sm btn-outline">View Details</a>
+                        {% if current_user.is_authenticated and current_user.role == 'organizer' and
+                        perf.organizer_id
+                        == current_user.id and not perf.is_published %}
+                        <a href="{{ url_for('manage_performance', perf_id=perf.id) }}"
+                            class="btn btn-sm btn-outline-secondary">Edit</a>
+                        {% endif %}
+                    </div>
+                </div>
+                {% elif perf.is_published %}
+                <!-- SEGMENTO DELLA SINGOLA CARD RELATIVA ALLE PERFORMANCE PUBBLICATE -->
+                <div class="card h-100">
+                    <img src="{{ url_for('static', filename=perf.image_path or 'images/logo/LogoFestivalDelTacco.jpeg') }}"
+                        class="card-img-top" alt="{{ perf.artist_name }}" style="height: 200px; object-fit: cover;">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ perf.artist_name }}</h5>
+                        <h6 class="card-subtitle mb-2 text-muted">{{ perf.genre }}</h6>
+                        <p class="card-text">
+                            <strong>Day:</strong> {{ perf.day }}<br>
+                            <strong>Time:</strong> {{ perf.start_time }} ({{ perf.duration_minutes }} mins)<br>
+                            <strong>Stage:</strong> {{ perf.stage_name }}
+                        </p>
+
+                    </div>
+                    <div class="card-footer">
+                        <a href="{{ url_for('performance_detail', perf_id=perf.id) }}"
+                            class="btn btn-sm btn-outline">View Details</a>
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+
+            {% endfor %}
+            <!-- fine sezione di tutte le card -->
+        </div>
+        {% else %}
+        <p>No performances found matching your criteria. Try adjusting the filters!</p>
+        {% endif %}
+    </div>
+</div>
+
+<!-- MAP SECTION -->
+<div class="row mt-5 mb-4">
+    <div class="col-12">
+        <h2 class="text-center mb-3" style="font-family: 'Playfair Display', serif;">Dove Trovarci</h2>
+        <div id="festivalMap" class="festival-map-container">
+            <!-- La mappa Leaflet verrà renderizzata qui -->
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts_extra %}
+<!-- SCRIPT PER LA MAPPA  -->
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        console.log("Attempting to initialize Leaflet map...");
+
+        if (typeof L === 'undefined') {
+            console.error('Leaflet (L) is not loaded! Check the script tag in base_festival.html.');
+            return;
+        }
+
+        const mapElement = document.getElementById('festivalMap');
+        if (!mapElement) {
+            console.error('Map container #festivalMap not found in the HTML!');
+            return;
+        }
+
+
+        const mapHeight = window.getComputedStyle(mapElement).getPropertyValue('height');
+        console.log("Computed map container height:", mapHeight);
+        if (mapHeight === "0px") {
+            console.warn("ATTENZIONE: L'altezza del contenitore della mappa è 0px. La mappa non sarà visibile. Controlla il CSS (.festival-map-container)!");
+        }
+
+        try {
+
+            const festivalLocation = [40.40430332101493, 18.20090042806457]; // Coordinate del Festival Del Tacco
+            const map = L.map('festivalMap').setView(festivalLocation, 14); // Il secondo numero è il livello di zoom
+
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+            }).addTo(map);
+
+            L.marker(festivalLocation).addTo(map)
+                .bindPopup('<b>Festival Del Tacco</b><br>Ti aspettiamo qui!')
+                .openPopup();
+            console.log('Leaflet map initialized successfully.');
+        } catch (e) {
+            console.error('Error initializing Leaflet map:', e);
+        }
+    });
+</script>
+<!-- FINE SCRIPT MAPPA -->
+{% endblock %}

@@ -1,0 +1,83 @@
+{% extends "base_festival.html" %}
+
+{% block title %}{% if perf_id %}Edit{% else %}Create{% endif %} Performance{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2>{% if perf_id %}Edit {% else %} Create New{% endif %} Performance</h2>
+    <hr>
+    <form method="POST" enctype="multipart/form-data" novalidate>
+        <div class="row">
+            <div class="col-md-6">
+                <div class="mb-3">
+                    <label for="artist_name" class="form-label">Artist Name*</label>
+                    <input type="text" class="form-control" id="artist_name" name="artist_name"
+                        value="{{ performance.artist_name if performance else request.form.artist_name }}" required>
+                </div>
+                <div class="mb-3">
+                    <label for="day" class="form-label">Day*</label>
+                    <select class="form-select" id="day" name="day" required>
+                        <option value="" disabled {% if not (performance or request.form.day) %}selected{% endif %}>
+                            Select Day...</option>
+                        {% for day_opt in FESTIVAL_DAYS %}
+                        <option value="{{ day_opt }}" {% if (performance and performance.day==day_opt) or
+                            (request.form.day==day_opt) %}selected{% endif %}>{{ day_opt }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="mb-3">
+                    <label for="start_time" class="form-label">Start Time (HH:MM)*</label>
+                    <input type="time" class="form-control" id="start_time" name="start_time"
+                        value="{{ performance.start_time if performance else request.form.start_time }}" required>
+                </div>
+                <div class="mb-3">
+                    <label for="duration_minutes" class="form-label">Duration (minutes)*</label>
+                    <input type="number" class="form-control" id="duration_minutes" name="duration_minutes"
+                        value="{{ performance.duration_minutes if performance else request.form.duration_minutes }}"
+                        min="1" required>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="mb-3">
+                    <label for="stage_name" class="form-label">Stage*</label>
+                    <select class="form-select" id="stage_name" name="stage_name" required>
+                        <option value="" disabled {% if not (performance or request.form.stage_name) %}selected{% endif
+                            %}>Select Stage...</option>
+                        {% for stage_opt in FESTIVAL_STAGES %}
+                        <option value="{{ stage_opt }}" {% if (performance and performance.stage_name==stage_opt) or
+                            (request.form.stage_name==stage_opt) %}selected{% endif %}>{{ stage_opt }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="mb-3">
+                    <label for="genre" class="form-label">Genre*</label>
+                    <input type="text" class="form-control" id="genre" name="genre"
+                        value="{{ performance.genre if performance else request.form.genre }}" required>
+                </div>
+                <div class="mb-3">
+                    <!-- SE E' UNA BOZZA L'IMMAGINE E' GIA' PRESENTE - MPTIVO DELL'IF -->
+                    <label for="image" class="form-label">Promotional Image {% if not perf_id %}*{% endif %}</label>
+                    <input type="file" class="form-control" id="image" name="image"
+                        accept="image/png, image/jpeg, image/gif">
+                    {% if perf_id and performance.image_path %}
+                    <!-- PREVIEW IMMAGINE -->
+                    <small class="form-text text-muted">Current image: <img
+                            src="{{ url_for('static', filename=performance.image_path) }}" alt="Current image"
+                            style="max-height: 50px; margin-top: 5px;"></small>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        <div class="mb-3">
+            <label for="description" class="form-label">Description*</label>
+            <textarea class="form-control" id="description" name="description" rows="5"
+                required>{{ performance.description if performance else request.form.description }}</textarea>
+        </div>
+
+        <button type="submit" class="btn mybuttoncolors">{% if perf_id %}Update{% else %}Create{% endif %} Performance
+            Draft</button>
+        <a href="{{ url_for('profile') }}" class="btn myclearbutton">Cancel</a>
+        <p class="mt-2"><small>* Required fields. New performances are created as unpublished drafts.</small></p>
+    </form>
+</div>
+{% endblock %}

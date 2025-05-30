@@ -1,0 +1,50 @@
+{% extends "base_festival.html" %}
+
+{% block title %}Ticket Sales Statistics{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2 style="font-family: 'Playfair Display', serif;">Ticket Sales Statistics</h2>
+    <p class="lead">Monitor the number of tickets sold for each day of the festival.</p>
+    <hr>
+
+    {% if attendance_data %}
+    <div class="row">
+        {% for day_data in attendance_data %}
+        <div class="col-md-4 mb-3">
+            <div class="card text-center">
+                <div class="card-header fs-5">
+                    {{ day_data.festival_day }}
+                </div>
+                <div class="card-body">
+                    <h3 class="card-title">{{ day_data.tickets_sold }} / {{ max_attendees }}</h3>
+                    <p class="card-text">Tickets Sold</p>
+                    <div class="progress" style="height: 25px;">
+                        {% set percentage = (day_data.tickets_sold / max_attendees * 100) | round(1) %}
+                        <div class="progress-bar {% if percentage >= 90 %}bg-danger{% elif percentage >= 70 %}bg-warning{% else %}bg-success{% endif %}"
+                            role="progressbar" style="width: {{percentage}}%;"
+                            aria-valuenow="{{ day_data.tickets_sold }}" aria-valuemin="0"
+                            aria-valuemax="{{ max_attendees }}">
+                            {{ percentage }}%
+                        </div>
+                    </div>
+                </div>
+                <div class="card-footer text-muted">
+                    {% if day_data.tickets_sold >= max_attendees %}
+                    <span class="text-danger fw-bold">SOLD OUT!</span>
+                    {% else %}
+                    {{ max_attendees - day_data.tickets_sold }} tickets remaining
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <p>No attendance data available yet.</p>
+    {% endif %}
+    <div class="mt-4">
+        <a href="{{ url_for('profile') }}" class="btn myclearbutton">« Back to Profile</a>
+    </div>
+</div>
+{% endblock %}
