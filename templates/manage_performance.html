@@ -2,6 +2,8 @@
 
 {% block title %}{% if perf_id %}Edit{% else %}Create{% endif %} Performance{% endblock %}
 
+{% block stylesheets_extra %}<link rel="stylesheet" href="{{ url_for('static', filename='css/style_manage_performance.css') }}"> {% endblock %}
+
 {% block content %}
 <div class="container mt-4">
     <h2 style="font-family: 'Playfair Display', serif;">{% if perf_id %}Edit {% else %} Create New{% endif %}
