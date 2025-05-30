@@ -13,11 +13,11 @@
                 {% if not performance.is_published %}
                 {% if current_user.is_authenticated and current_user.role == 'organizer' and performance.organizer_id ==
                 current_user.id and not performance.is_published %}
-                <a href="{{ url_for('manage_performance', perf_id=performance.id) }}" class="btn btn-secondary">Edit
+                <a href="{{ url_for('manage_performance', perf_id=performance.id) }}" class="btn myeditbutton">Edit
                     Draft</a>
                 <form action="{{ url_for('publish_performance', perf_id=performance.id) }}" method="POST"
                     style="display: inline;">
-                    <button type="submit" class="btn btn-primary">Publish Performance</button>
+                    <button type="submit" class="btn mypublishbtn">Publish Performance</button>
                 </form>
                 {% endif %}
                 {% if current_user.is_authenticated and current_user.role == 'organizer' and performance.organizer_id !=

@@ -54,9 +54,9 @@ footer.footer {
 
 .card-img-top {
     height: 200px;
- 
+
     object-fit: cover;
-    
+
 }
 
 .card-title {
@@ -65,7 +65,7 @@ footer.footer {
 
 .card-footer {
     background-color: #f8f9fa;
-    
+
     border-top: 1px solid #dee2e6;
 }
 
@@ -130,6 +130,17 @@ header.sticky-top {
     color: #fff4e2;
 }
 
+.mybtn-outline-edit {
+    border-color: #654069;
+    color: #654069;
+   
+}
+.mybtn-outline-edit:hover {
+    background-color: #654069;
+    border: #654069;
+    color: #fff4e2;
+    
+}
 .myviewbutton {
     background-color: #3e7adb;
     border: none;
@@ -142,6 +153,7 @@ header.sticky-top {
     color: #0c1163;
 }
 
+.mypublishbtn,
 .mypurchasebtn,
 .mynewperfbutton {
     background-color: #56a69d;
@@ -149,6 +161,7 @@ header.sticky-top {
     color: #0c1163;
 }
 
+.mypublishbtn:hover,
 .mypurchasebtn:hover,
 .mynewperfbutton:hover {
     background-color: #414c62;
@@ -195,8 +208,6 @@ header.sticky-top {
     --bs-btn-padding-x: .5rem;
     --bs-btn-font-size: .75rem;
 }
-
-
 
 .btn-outline {
     border-color: #e79801;

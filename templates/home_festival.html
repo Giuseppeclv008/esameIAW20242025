@@ -182,7 +182,7 @@
                         perf.organizer_id
                         == current_user.id and not perf.is_published %}
                         <a href="{{ url_for('manage_performance', perf_id=perf.id) }}"
-                            class="btn btn-sm btn-outline-secondary">Edit</a>
+                            class="btn btn-sm mybtn-outline-edit">Edit</a>
                         {% endif %}
                     </div>
                 </div>
