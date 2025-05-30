@@ -1,13 +1,15 @@
+
 {% extends "base_festival.html" %}
 
-{% block title %}Ticket Sales Statistics{% endblock %}
+{% block title %}Festival Statistics{% endblock %}
 
 {% block content %}
 <div class="container mt-4">
-    <h2 style="font-family: 'Playfair Display', serif;">Ticket Sales Statistics</h2>
-    <p class="lead">Monitor the number of tickets sold for each day of the festival.</p>
+    <h2 style="font-family: 'Playfair Display', serif;">Festival Statistics</h2>
     <hr>
 
+    <h3 style="font-family: 'Playfair Display', serif;" class="mt-4 mb-3">Daily Attendance Caps</h3>
+    <p class="lead">Monitor the number of tickets sold against the daily capacity for each day of the festival.</p>
     {% if attendance_data %}
     <div class="row">
         {% for day_data in attendance_data %}
@@ -20,7 +22,7 @@
                     <h3 class="card-title">{{ day_data.tickets_sold }} / {{ max_attendees }}</h3>
                     <p class="card-text">Tickets Sold</p>
                     <div class="progress" style="height: 25px;">
-                        {% set percentage = (day_data.tickets_sold / max_attendees * 100) | round(1) %}
+                        {% set percentage = (day_data.tickets_sold / max_attendees * 100) | round(1) if max_attendees > 0 else 0 %}
                         <div class="progress-bar {% if percentage >= 90 %}bg-danger{% elif percentage >= 70 %}bg-warning{% else %}bg-success{% endif %}"
                             role="progressbar" style="width: {{percentage}}%;"
                             aria-valuenow="{{ day_data.tickets_sold }}" aria-valuemin="0"
@@ -43,6 +45,41 @@
     {% else %}
     <p>No attendance data available yet.</p>
     {% endif %}
+
+    <hr class="my-4">
+
+    <h3 style="font-family: 'Playfair Display', serif;" class="mt-4 mb-3">Ticket Holder Details</h3>
+    {% if tickets_details %}
+    <div class="table-responsive">
+        <table class="table table-striped table-hover">
+            <thead>
+                <tr>
+                    <th scope="col">Ticket ID</th>
+                    <th scope="col">User Nickname</th>
+                    <th scope="col">User Email</th>
+                    <th scope="col">Ticket Type</th>
+                    <th scope="col">Valid Days</th>
+                    <th scope="col">Purchase Date</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for ticket in tickets_details %}
+                <tr>
+                    <td>{{ ticket.ticket_id }}</td>
+                    <td>{{ ticket.user_nickname }}</td>
+                    <td>{{ ticket.user_email }}</td>
+                    <td>{{ ticket.ticket_type_name }}</td>
+                    <td>{{ ticket.valid_days_list | join(', ') }}</td>
+                    <td>{{ ticket.purchase_date.split(' ')[0] }}</td> {# Mostra solo la data #}
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% else %}
+    <p>No tickets have been sold yet.</p>
+    {% endif %}
+
     <div class="mt-4">
         <a href="{{ url_for('profile') }}" class="btn myclearbutton">« Back to Profile</a>
     </div>

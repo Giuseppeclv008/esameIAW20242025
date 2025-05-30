@@ -231,7 +231,30 @@ def update_performance(performance_id, artist_name, day, start_time, duration_mi
         return False
     finally:
         conn.close()
-        
+
+def get_all_ticket_details(): # Nuova funzione per i dettagli dei biglietti
+    conn = get_db_connection()
+    # Selezioniamo l'email e il nickname dell'utente, e tutti i dettagli del biglietto
+    # Usiamo LEFT JOIN per assicurarci di prendere tutti i biglietti anche se, per qualche motivo,
+    # un utente fosse stato cancellato (anche se la FK dovrebbe impedirlo).
+    query = """
+        SELECT
+            b.id as ticket_id,
+            b.ticket_type,
+            b.valid_days,
+            b.purchase_date,
+            u.id as user_id,
+            u.email as user_email,
+            u.nickname as user_nickname
+        FROM BIGLIETTI b
+        JOIN UTENTI u ON b.user_id = u.id
+        ORDER BY b.purchase_date DESC
+    """
+    tickets = conn.execute(query).fetchall()
+    conn.close()
+    return tickets
+
+
 def get_attendees_for_day(target_day):
 
     conn = get_db_connection()
@@ -246,9 +269,9 @@ def get_attendees_for_day(target_day):
         FROM UTENTI u
         JOIN BIGLIETTI b ON u.id = b.user_id
         WHERE
-            (t.ticket_type = 'full_pass') OR
-            (t.ticket_type = 'daily' AND t.days_selected = :target_day) OR
-            (t.ticket_type = '2-day' AND INSTR(t.valid_days, :target_day) > 0) 
+            (b.ticket_type = 'full_pass') OR
+            (b.ticket_type = 'daily' AND t.days_selected = :target_day) OR
+            (b.ticket_type = '2-day' AND INSTR(t.valid_days, :target_day) > 0) 
         ORDER BY u.nickname
     """, {'target_day': target_day}).fetchall() 
     # :target_day nella query è un placeholder per il parametro che verrà passato
@@ -333,7 +356,28 @@ def get_all_daily_attendance():
     conn.close()
     return attendance_data
 
+def delete_performance(performance_id, requesting_organizer_id):
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    try:
+        # Prima verifica che la performance esista e appartenga all'organizzatore richiedente
+        performance = conn.execute("SELECT organizer_id FROM PERFORMANCE WHERE id = ?", (performance_id,)).fetchone()
+        if not performance:
+            return "not_found" # Performance non trovata
+        if performance['organizer_id'] != requesting_organizer_id:
+            return "unauthorized" # Non autorizzato a eliminare
 
+        cursor.execute("DELETE FROM PERFORMANCE WHERE id = ?", (performance_id,))
+        conn.commit()
+        return "success" if cursor.rowcount > 0 else "not_found" # rowcount > 0 se l'eliminazione ha avuto successo
+    except sqlite3.Error as e:
+        conn.rollback() # in caso di errore, annullo la transazione, evito inconsisenze nel db, proprietà di atomicità
+        print(f"Database error deleting performance: {e}")
+        return "db_error"
+    finally:
+        conn.close()
+        
+        
 if __name__ == '__main__':
     # This will initialize the database if the script is run directly
     # You might want to pass a specific db name from your app config

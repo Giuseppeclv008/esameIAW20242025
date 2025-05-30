@@ -467,7 +467,44 @@ def organizer_stats():
         abort(403)
     
     attendance_data = db.get_all_daily_attendance()
-    return render_template('organizer_stats.html', attendance_data=attendance_data, max_attendees=Config.MAX_DAILY_ATTENDEES)
+    all_tickets_details = db.get_all_ticket_details() # Recupera i dettagli di tutti i biglietti
+
+    # Potresti voler processare all_tickets_details per raggrupparli o formattarli
+    # Esempio: convertire valid_days in una lista per il template
+    processed_tickets = []
+    for ticket in all_tickets_details:
+        ticket_dict = dict(ticket) # Converte sqlite3.Row in un dizionario
+        ticket_dict['valid_days_list'] = ticket_dict['valid_days'].split(',')
+        ticket_dict['ticket_type_name'] = Config.TICKET_TYPES.get(ticket_dict['ticket_type'], {}).get('name', ticket_dict['ticket_type'])
+        processed_tickets.append(ticket_dict)
+
+    return render_template(
+        'organizer_stats.html',
+        attendance_data=attendance_data,
+        max_attendees=Config.MAX_DAILY_ATTENDEES,
+        tickets_details=processed_tickets # Passa i dettagli dei biglietti al template
+    )
+
+@app.route('/performance/<int:perf_id>/delete', methods=['POST'])
+@login_required
+def delete_performance_route(perf_id):
+    if current_user.role != 'organizer':
+        flash("You are not authorized for this action.", "danger")
+        return redirect(url_for('home'))
+
+    result = db.delete_performance(perf_id, current_user.id)
+
+    if result == "success":
+        flash("Performance deleted successfully.", "success")
+    elif result == "not_found":
+        flash("Performance not found or already deleted.", "warning")
+    elif result == "unauthorized":
+        flash("You are not authorized to delete this performance.", "danger")
+    elif result == "db_error":
+        flash("A database error occurred while trying to delete the performance.", "danger")
+    
+    return redirect(url_for('profile'))
+
 
 
 
