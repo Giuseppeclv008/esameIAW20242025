@@ -141,13 +141,13 @@ header.sticky-top {
     border: #654069;
     color: #0c1163;
 }
-
+.mypurchasebtn
 .mynewperfbutton {
     background-color: #56a69d;
     border: none;
     color: #0c1163;
 }
-
+.mypurchasebtn:hover,
 .mynewperfbutton:hover {
     background-color: #414c62;
     border: #414c62;
