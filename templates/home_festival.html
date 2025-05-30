@@ -8,7 +8,7 @@
  che sono pubblicate, poi su quelle che hanno un immagine - previene il caso in cui un immagine venga a mancare - infine list trasforma l'oggetto ottenuto da selectattribute in una lista  -->
 {% set carousel_performances = performances | selectattr('is_published') | selectattr('image_path') | list %}
 <!-- se la lista creata qui sopra è presente mostro le immagini nel carosello -->
-{% if carousel_performances %} 
+{% if carousel_performances %}
 <div class="row mb-4">
     <div class="col-12">
         <div id="performanceCarousel" class="carousel slide shadow-sm rounded" data-bs-ride="carousel">
@@ -233,7 +233,6 @@
 <!-- SCRIPT PER LA MAPPA  -->
 
 <script src="{{ url_for('static', filename='js/script_mappa.js') }}"></script>
-
 
 <!-- FINE SCRIPT MAPPA -->
 {% endblock %}
