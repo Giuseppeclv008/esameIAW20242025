@@ -54,9 +54,9 @@ footer.footer {
 
 .card-img-top {
     height: 200px;
-    /* Or your preferred height */
+ 
     object-fit: cover;
-    /* Ensures the image covers the area nicely */
+    
 }
 
 .card-title {
@@ -65,14 +65,14 @@ footer.footer {
 
 .card-footer {
     background-color: #f8f9fa;
-    /* Light background for footer */
+    
     border-top: 1px solid #dee2e6;
 }
 
 /* Ensure dropdowns in navbar are aligned well */
 .navbar .dropdown-menu {
     margin-top: 0.5rem;
-    /* Adjust as needed */
+
 }
 
 /* Sticky top for header */
@@ -141,12 +141,14 @@ header.sticky-top {
     border: #654069;
     color: #0c1163;
 }
-.mypurchasebtn
+
+.mypurchasebtn,
 .mynewperfbutton {
     background-color: #56a69d;
     border: none;
     color: #0c1163;
 }
+
 .mypurchasebtn:hover,
 .mynewperfbutton:hover {
     background-color: #414c62;

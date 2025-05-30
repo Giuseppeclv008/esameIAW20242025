@@ -11,7 +11,7 @@
 {% if carousel_performances %}
 <div class="row mb-4">
     <div class="col-12">
-        <div id="performanceCarousel" class="carousel slide shadow-sm rounded" data-bs-ride="carousel">
+        <div id="performanceCarousel" class="carousel mycarousel slide shadow-sm rounded" data-bs-ride="carousel">
             <div class="carousel-indicators">
                 {% for perf_item in carousel_performances %}
                 <button type="button" data-bs-target="#performanceCarousel" data-bs-slide-to="{{ loop.index0 }}"
