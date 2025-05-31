@@ -22,9 +22,10 @@ db.init_db(app.config['DATABASE'])
 # Flask-Login Setup
 login_manager = LoginManager()
 login_manager.init_app(app)
-login_manager.login_view = 'login' # Redirect to 'login' view if @login_required is hit
+login_manager.login_view = 'register' # Redirect to 'login' view if @login_required is hit
 login_manager.login_message_category = "info"
 login_manager.login_message = "Please log in to access this page."
+
 
 class User(UserMixin):
     def __init__(self, id, email, nickname, role, password_hash=None):
@@ -384,11 +385,7 @@ def buy_ticket():
     if current_user.role != 'participant':
         flash("Only participants can buy tickets.", "warning")
         return redirect(url_for('home'))
-    elif not current_user.is_authenticated: # se arrivo qui dal pulsante "Buy Ticket" ma non sono loggato
-        flash("Please sign in to purchase a ticket.", "info")
-        return redirect(url_for('register', next=url_for('buy_ticket'))) # dopo aver effettuato il login, l'utente verrà reindirizzato alla pagina next
-    
-    
+
     if db.get_ticket_by_user_id(current_user.id):
         flash("You have already purchased a ticket for this festival.", "info")
         return redirect(url_for('profile'))
@@ -465,6 +462,13 @@ def buy_ticket():
                            form_values=current_form_values) # current_form_values è {} per GET
 
 
+@app.route('/handle_buy_ticket_action') # Questa route è usata per gestire il caso in cui l'utente non è loggato e clicca su "Buy Ticket"
+                                        # Utile perchè nel caso cercassi di entrare nella pagina /buy_ticket senza essere loggato,
+                                        # verrebbe reindirizzato alla pagina di registrazione/login ma non avrei il redirect alla pagina /buy_ticket 
+def handle_buy_ticket_action():
+    flash("Please register or log in to purchase a ticket", "info")
+
+    return redirect(url_for('register', next=url_for('buy_ticket')))
 
 
 

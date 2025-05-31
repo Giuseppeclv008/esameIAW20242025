@@ -231,8 +231,8 @@
     <div class="position-fixed bottom-0 end-0 p-3" style="z-index: 1030;">
 
         {# Il link cambia in base allo stato di autenticazione #}
-        <a href="{{ url_for('buy_ticket') }}" class="btn btn-success btn-lg shadow"
-            title="{{ _('Buy your ticket here!') }}">
+        <a href="{{ url_for('handle_buy_ticket_action') }}" class="btn btn-success btn-lg shadow"
+            title="Buy your ticket here!">
             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor"
                 class="bi bi-ticket-perforated-fill me-2" viewBox="0 0 16 16">
                 <path
