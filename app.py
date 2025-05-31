@@ -141,7 +141,12 @@ def register():
         if existing_user:
             flash("Email address already registered.", "warning")
             return redirect(url_for('register'))
-
+        
+        existing_user = db.get_user_by_nickname(nickname)
+        if db.get_user_by_nickname(nickname):
+            flash("Nickname already taken. Please choose another.", "warning")
+            return redirect(url_for('register'))
+        
         password_hash = generate_password_hash(password, method='pbkdf2:sha256')
         user_id = db.add_user(email, nickname, password_hash, role)
         
@@ -156,8 +161,10 @@ def register():
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
+    next_url = request.args.get('next') # Prendi l'URL 'next', nel caso in cui arrivassi da una pagina che passa next, 
+                                        # come nel caso in cui un utente non regitstrato cerca di comprare dal pulsante 
     if current_user.is_authenticated:
-        return redirect(url_for('home'))
+        return redirect(url_for('home')) 
     if request.method == 'POST':
         email = request.form.get('email')
         password = request.form.get('password')
@@ -174,7 +181,7 @@ def login():
         else:
             flash("Invalid email or password.", "danger")
             
-    return render_template('login_festival.html')
+    return render_template('login_festival.html', next =next_url)
 
 @app.route('/logout')
 @login_required
@@ -466,9 +473,13 @@ def buy_ticket():
                                         # Utile perchè nel caso cercassi di entrare nella pagina /buy_ticket senza essere loggato,
                                         # verrebbe reindirizzato alla pagina di registrazione/login ma non avrei il redirect alla pagina /buy_ticket 
 def handle_buy_ticket_action():
-    flash("Please register or log in to purchase a ticket", "info")
+    if current_user.is_authenticated:
+        # Se l'utente è autenticato, reindirizza alla pagina di acquisto biglietti
+        return redirect(url_for('buy_ticket', next=url_for('buy_ticket')))
+    elif current_user.is_anonymous:
+        flash("Please register or log in to purchase a ticket", "info")
+        return redirect(url_for('register', next=url_for('buy_ticket')))
 
-    return redirect(url_for('register', next=url_for('buy_ticket')))
 
 
 

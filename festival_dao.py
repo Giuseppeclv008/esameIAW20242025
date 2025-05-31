@@ -96,6 +96,12 @@ def get_user_by_email(email):
     conn.close()
     return user
 
+def get_user_by_nickname(nickname):
+    conn = get_db_connection()
+    user = conn.execute("SELECT * FROM UTENTI WHERE nickname = ?", (nickname,)).fetchone()
+    conn.close()
+    return user
+
 def get_user_by_id(user_id):
     conn = get_db_connection()
     user = conn.execute("SELECT * FROM UTENTI WHERE id = ?", (user_id,)).fetchone()
