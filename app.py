@@ -380,10 +380,15 @@ def publish_performance(perf_id):
 @app.route('/buy_ticket', methods=['GET', 'POST'])
 @login_required
 def buy_ticket():
+    
     if current_user.role != 'participant':
         flash("Only participants can buy tickets.", "warning")
         return redirect(url_for('home'))
-
+    elif not current_user.is_authenticated: # se arrivo qui dal pulsante "Buy Ticket" ma non sono loggato
+        flash("Please sign in to purchase a ticket.", "info")
+        return redirect(url_for('register', next=url_for('buy_ticket'))) # dopo aver effettuato il login, l'utente verrà reindirizzato alla pagina next
+    
+    
     if db.get_ticket_by_user_id(current_user.id):
         flash("You have already purchased a ticket for this festival.", "info")
         return redirect(url_for('profile'))
@@ -458,6 +463,11 @@ def buy_ticket():
                            TICKET_TYPES_CONFIG=Config.TICKET_TYPES,
                            FESTIVAL_DAYS=Config.FESTIVAL_DAYS,
                            form_values=current_form_values) # current_form_values è {} per GET
+
+
+
+
+
 
 
 @app.route('/organizer/stats')
