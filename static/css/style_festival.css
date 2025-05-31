@@ -31,6 +31,24 @@ main.container {
     padding-bottom: 100px;
 }
 
+
+
+/* Carousel Styling */
+.mycarousel .carousel-item {
+    height: 450px; /* Altezza fissa per tutti gli item del carousel */
+
+    background-color: #f0f0f0; /* Colore di sfondo per vedere l'area se l'immagine non carica o è più piccola */
+}
+
+.mycarousel .carousel-item img {
+    object-fit: cover;
+    width: 100%;
+    height: 100%; /* Fai sì che l'immagine riempia l'altezza del carousel-item */
+   
+}
+
+
+
 /* Footer styling */
 footer.footer {
     flex-shrink: 0;
@@ -222,11 +240,23 @@ header.sticky-top {
     main {
         padding-top: 240px !important;
     }
+
+    .mycarousel .carousel-item {
+        height: 300px; /* Altezza ridotta per mobile */
+    }
+
 }
 
 @media (min-width: 577px) and (max-width: 768px) {
     main {
         padding-top: 200px !important;
+    }
+    .mycarousel .carousel-item {
+        height: 250px; /* Altezza ulteriormente ridotta */
+    }
+    .mycarousel .carousel-inner {
+
+        height: 100%; 
     }
 }
 
