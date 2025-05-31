@@ -238,26 +238,37 @@ def update_performance(performance_id, artist_name, day, start_time, duration_mi
     finally:
         conn.close()
 
-def get_all_ticket_details(): # Nuova funzione per i dettagli dei biglietti
+def get_all_ticket_details(ticket_type_filter=None): # Nuova funzione per i dettagli dei biglietti
     conn = get_db_connection()
     # Selezioniamo l'email e il nickname dell'utente, e tutti i dettagli del biglietto
     # Usiamo LEFT JOIN per assicurarci di prendere tutti i biglietti anche se, per qualche motivo,
     # un utente fosse stato cancellato (anche se la FK dovrebbe impedirlo).
-    query = """
+    params = []
+    
+    base_query = """
         SELECT
             b.id as ticket_id,
             b.ticket_type,
-            b.valid_days,
-            b.purchase_date,
-            u.id as user_id,
-            u.email as user_email,
+            b.valid_days,      
+            b.purchase_date,    
+            u.id as user_id,        
+            u.email as user_email, 
             u.nickname as user_nickname
         FROM BIGLIETTI b
         JOIN UTENTI u ON b.user_id = u.id
-        ORDER BY b.purchase_date DESC
     """
-    tickets = conn.execute(query).fetchall()
+    conditions = []
+    if ticket_type_filter:# filtro opzionale per il tipo di biglietto
+        conditions.append("b.ticket_type = ?")
+        params.append(ticket_type_filter)
+
+    if conditions: # Aggiungo le condizioni solo se ci sono filtri 
+        base_query += " WHERE " + " AND ".join(conditions)
+        
+    base_query += " ORDER BY b.purchase_date DESC"
+    tickets = conn.execute(base_query, tuple(params)).fetchall()
     conn.close()
+    
     return tickets
 
 

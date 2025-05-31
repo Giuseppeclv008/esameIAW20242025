@@ -223,7 +223,7 @@ def performance_detail(perf_id):
         abort(404)
     # Only show if published, or if current user is the organizer of this performance (even if unpublished)
     if not performance['is_published'] and ( not current_user.is_authenticated ):
-         abort(403) # Forbidden
+         abort(404) 
     
     can_buy_ticket = False
     if current_user.is_authenticated and current_user.role == 'participant':
@@ -367,7 +367,7 @@ def manage_performance(perf_id=None):
 @login_required
 def publish_performance(perf_id):
     if current_user.role != 'organizer':
-        abort(403)
+        abort(404)
     
     performance = db.get_performance_by_id(perf_id)
     if not performance or performance['organizer_id'] != current_user.id:
@@ -489,13 +489,14 @@ def handle_buy_ticket_action():
 @login_required
 def organizer_stats():
     if current_user.role != 'organizer':
-        abort(403)
+        abort(404)
     
+    ticket_type_filter_value = request.args.get('ticket_type_filter')
     attendance_data = db.get_all_daily_attendance()
-    all_tickets_details = db.get_all_ticket_details() # Recupera i dettagli di tutti i biglietti
-
-    # Potresti voler processare all_tickets_details per raggrupparli o formattarli
-    # Esempio: convertire valid_days in una lista per il template
+    
+    all_tickets_details = db.get_all_ticket_details(ticket_type_filter=ticket_type_filter_value) 
+    
+  
     processed_tickets = []
     for ticket in all_tickets_details:
         ticket_dict = dict(ticket) # Converte sqlite3.Row in un dizionario
@@ -507,8 +508,9 @@ def organizer_stats():
         'organizer_stats.html',
         attendance_data=attendance_data,
         max_attendees=Config.MAX_DAILY_ATTENDEES,
-        tickets_details=processed_tickets # Passa i dettagli dei biglietti al template
-    )
+        tickets_details=processed_tickets, # Passa i dettagli dei biglietti al template
+        selected_ticket_type=ticket_type_filter_value # Per ripopolare il filtro
+        )
 
 @app.route('/performance/<int:perf_id>/delete', methods=['POST'])
 @login_required
