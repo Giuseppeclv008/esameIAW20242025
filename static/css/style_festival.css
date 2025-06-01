@@ -233,7 +233,27 @@ header.sticky-top {
     /* Colore del testo per lo stato normale */
     /* text-decoration: solid; -> Nota: 'solid' non è un valore standard per text-decoration. Potresti volerlo rimuovere o cambiarlo con 'none', 'underline', ecc. */
 }
+/* END CHECKOUT SECTION */
 
+.form-control:focus {
+    border-color: #0d6efd;
+    box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.25);
+}
+
+#card_number {
+    font-family: 'Courier New', monospace;
+    letter-spacing: 1px;
+}
+
+#expiry_date, #cvv {
+    font-family: 'Courier New', monospace;
+}
+
+.alert-warning {
+    background-color: #fff3cd;
+    border-color: #ffecb5;
+}
+/* END CHECKOUT SECTION */
 
 /* Padding-top personalizzato per il main in base alla dimensione dello schermo */
 @media (max-width: 576px) {

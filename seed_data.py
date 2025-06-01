@@ -12,16 +12,6 @@ def seed():
     conn = sqlite3.connect(Config.DATABASE)
     cursor = conn.cursor()
 
-    # Clear existing data for idempotency (optional, be careful with real data)
-    # tables = ['BIGLIETTI', 'PERFORMANCE', 'UTENTI', 'PRESENZE_GIORNALIERE']
-    # for table in tables:
-    #     print(f"Clearing table {table}...")
-    #     cursor.execute(f"DELETE FROM {table};")
-    # conn.commit()
-    # # Re-initialize daily attendance after clearing
-    # for day_festival in Config.FESTIVAL_DAYS:
-    #     cursor.execute("INSERT OR IGNORE INTO PRESENZE_GIORNALIERE (festival_day, tickets_sold) VALUES (?, 0)", (day_festival,))
-    # conn.commit()
 
 
     print("Seeding users...")
@@ -65,15 +55,20 @@ def seed():
         {"artist_name": "Sud Sound System", "day": "Friday", "start_time": "18:00", "duration_minutes": 90, "description": "Reggae salentino con ritmi travolgenti.", "stage_name": "Palco Sole & Sale", "genre": "Reggae", "image_path": "images/performances/SudSoundSystem.jpg", "is_published": 1, "organizer_id": org1_id},
         {"artist_name": "Mama Marjas", "day": "Friday", "start_time": "19:45", "duration_minutes": 75, "description": "Soul e reggae con voce potente dal cuore di Taranto.", "stage_name": "Palco Taranta Elettrica", "genre": "Soul/Reggae", "image_path": "images/performances/mama_marjas.jpg", "is_published": 1, "organizer_id": org2_id},
         {"artist_name": "Ghemon ", "day": "Friday", "start_time": "21:15", "duration_minutes": 75, "description": "Performance speciale con band locale di Lecce.", "stage_name": "Palco Ulivo Sonoro", "genre": "Hip-Hop/Fusion", "image_path": "images/performances/Ghemon.jpg", "is_published": 1, "organizer_id": org1_id},
+        {"artist_name": "Domenico Modugno", "day": "Friday", "start_time": "20:00", "duration_minutes": 90, "description": "Omaggio al maestro", "stage_name": "Palco Sole & Sale", "genre": "Cantautorato", "image_path": "images/performances/DomenicoModugno.jpeg", "is_published": 0, "organizer_id": org1_id},
+        {"artist_name": "Alborosie", "day": "Friday", "start_time": "22:45", "duration_minutes": 75, "description": "Star Internazionale del Reggae", "stage_name": "Palco Taranta Elettrica", "genre": "Reggae", "image_path": "images/performances/Alborosie.jpeg", "is_published": 1, "organizer_id": org2_id},
                 # Sabato
         {"artist_name": "Boomdabash", "day": "Saturday", "start_time": "17:00", "duration_minutes": 90, "description": "Dancehall e pop salentino per scatenare il pubblico.", "stage_name": "Palco Sole & Sale", "genre": "Pop/Dancehall", "image_path": "images/performances/Boomdabash.jpg", "is_published": 1, "organizer_id": org2_id},
         {"artist_name": "La Municipàl", "day": "Saturday", "start_time": "18:45", "duration_minutes": 75, "description": "Indie pop raffinato e poetico dal Salento.", "stage_name": "Palco Taranta Elettrica", "genre": "Indie Pop", "image_path": "images/performances/LaMunicipal.jpg", "is_published": 1, "organizer_id": org1_id},
         {"artist_name": "Antonio Castrignanò", "day": "Saturday", "start_time": "20:15", "duration_minutes": 90, "description": "Il volto moderno della pizzica con energia e tradizione.", "stage_name": "Palco Ulivo Sonoro", "genre": "Pizzica", "image_path": "images/performances/AntonioCastrignano.jpg", "is_published": 1, "organizer_id": org2_id},
-
+        {"artist_name": "Caparezza", "day": "Saturday", "start_time": "20:00", "duration_minutes": 90, "description": "Artista irriverente e pungente ", "stage_name": "Palco Sole & Sale", "genre": "Rap", "image_path": "images/performances/Caparezza.jpeg", "is_published": 0, "organizer_id": org1_id},
+        {"artist_name": "Al Bano", "day": "Saturday", "start_time": "22:00", "duration_minutes": 75, "description": "Al Bano ci viene a trovare dopo il suo importantissimo tour in Russia", "stage_name": "Palco Taranta Elettrica", "genre": "Cantautorato", "image_path": "images/performances/Al Bano.jpeg", "is_published": 1, "organizer_id": org2_id},
         # Domenica
         {"artist_name": "Krikka Reggae", "day": "Sunday", "start_time": "16:00", "duration_minutes": 75, "description": "Reggae del sud Italia con testi sociali.", "stage_name": "Palco Sole & Sale", "genre": "Reggae", "image_path": "images/performances/KrikkaReggae.jpg", "is_published": 1, "organizer_id": org1_id},
         {"artist_name": "Camillo Pace", "day": "Sunday", "start_time": "17:30", "duration_minutes": 60, "description": "Cantautorato raffinato e poetico dalla provincia tarantina.", "stage_name": "Palco Taranta Elettrica", "genre": "Cantautorato", "image_path": "images/performances/CamilloPace.jpg", "is_published": 1, "organizer_id": org2_id},
         {"artist_name": "Officina Zoè", "day": "Sunday", "start_time": "19:00", "duration_minutes": 90, "description": "Storica formazione di pizzica salentina, autentica e potente.", "stage_name": "Palco Ulivo Sonoro", "genre": "Pizzica Tradizionale", "image_path": "images/performances/OfficinaZoe.jpg", "is_published": 1, "organizer_id": org1_id},
+        {"artist_name": "Checco Zalone", "day": "Sunday", "start_time": "23:00", "duration_minutes": 90, "description": "Il comico Checco Zalone ci delizia con le sue canzoni ironiche ", "stage_name": "Palco Sole & Sale", "genre": "Cantautorato/Comico", "image_path": "images/performances/CheccoZalone.jpg", "is_published": 0, "organizer_id": org1_id},
+        {"artist_name": "Renzo Arbore", "day": "Sunday", "start_time": "19:45", "duration_minutes": 75, "description": "Intermezzo nostalgico con il carissimo Renzo Arbore", "stage_name": "Palco Taranta Elettrica", "genre": "Cantautorato", "image_path": "images/performances/RenzoArbore.jpg", "is_published": 1, "organizer_id": org2_id},
     ]
 
     for perf_data in performances_data:

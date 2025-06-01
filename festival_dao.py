@@ -399,5 +399,11 @@ if __name__ == '__main__':
     # This will initialize the database if the script is run directly
     # You might want to pass a specific db name from your app config
     from festival_config import Config
-    init_db(Config.DATABASE)
-    print("To seed data, run seed_data.py")
+    
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    cursor.execute("UPDATE PRESENZE_GIORNALIERE SET tickets_sold = ? WHERE festival_day = ?", (200, Friday))
+    conn.commit()
+    conn.close()
+    
+

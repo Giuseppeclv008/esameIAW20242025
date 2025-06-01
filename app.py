@@ -22,7 +22,7 @@ db.init_db(app.config['DATABASE'])
 # Flask-Login Setup
 login_manager = LoginManager()
 login_manager.init_app(app)
-login_manager.login_view = 'register' # Redirect to 'login' view if @login_required is hit
+login_manager.login_view = 'login' # Redirect to 'login' view if @login_required is hit
 login_manager.login_message_category = "info"
 login_manager.login_message = "Please log in to access this page."
 
@@ -33,13 +33,13 @@ class User(UserMixin):
         self.email = email
         self.nickname = nickname
         self.role = role
-        self._password_hash = password_hash # Store hash for internal use if needed
+        self._password_hash = password_hash # Store hash for internal use 
 
-    # Flask-Login expects get_id to return a string
+ 
     def get_id(self):
         return str(self.id)
 
-    # Add methods to check password, etc.
+ 
     def check_password(self, password):
         user_data = db.get_user_by_id(self.id) 
         if user_data:
@@ -194,7 +194,7 @@ def logout():
 @login_required
 def profile():
     user_ticket = None
-    organizer_all_festival_performances = [] # Per la visione completa del festival da parte dell'organizzatore
+    all_festival_performances = [] # Per la visione completa del festival da parte dell'organizzatore
 
     if current_user.role == 'participant':
         user_ticket_data = db.get_ticket_by_user_id(current_user.id)
@@ -210,11 +210,11 @@ def profile():
     elif current_user.role == 'organizer':
         print(current_user.id)
         # L'organizzatore vede le sue bozze E tutte le performance pubblicate da chiunque
-        organizer_all_festival_performances = db.get_performances_by_organizer(organizer_id=current_user.id)
+        all_festival_performances = db.get_all_performances()
 
     return render_template('profile_festival.html', 
                            user_ticket=user_ticket, 
-                           organizer_performances=organizer_all_festival_performances) 
+                           performances=all_festival_performances) 
     
 @app.route('/performance/<int:perf_id>')
 def performance_detail(perf_id):
@@ -385,6 +385,7 @@ def publish_performance(perf_id):
     return redirect(url_for('profile'))
 
 
+
 @app.route('/buy_ticket', methods=['GET', 'POST'])
 @login_required
 def buy_ticket():
@@ -405,6 +406,14 @@ def buy_ticket():
         # Input specifici per tipo di biglietto
         selected_day_for_daily = request.form.get('days_daily')    # Radio button, un solo valore
         selected_days_for_2day = request.form.getlist('days_2day') # Checkbox, lista di valori
+        
+        # Nuovi campi per il checkout
+        card_holder = request.form.get('card_holder')
+        card_number = request.form.get('card_number')
+        expiry_date = request.form.get('expiry_date')
+        cvv = request.form.get('cvv')
+        billing_email = request.form.get('billing_email')
+        terms_accepted = request.form.get('terms_accepted')
 
         # Funzione helper per re-renderizzare con errore e valori del form
         def render_with_error_and_form_values(message):
@@ -414,6 +423,37 @@ def buy_ticket():
                                    FESTIVAL_DAYS=Config.FESTIVAL_DAYS,
                                    form_values=request.form) # Passa i valori correnti del form
 
+        # Validazione dei campi di pagamento
+        if not all([card_holder, card_number, expiry_date, cvv, billing_email]):
+            return render_with_error_and_form_values("All payment fields are required.")
+        
+        if not terms_accepted:
+            return render_with_error_and_form_values("You must accept the Terms & Conditions to proceed.")
+        
+        # Validazioni base sui dati della carta (fittizie ma realistiche)
+        if len(card_holder.strip()) < 2:
+            return render_with_error_and_form_values("Please enter a valid cardholder name.")
+        
+        # Rimuovi spazi dal numero della carta per la validazione
+        card_number_clean = card_number.replace(' ', '')
+        if not card_number_clean.isdigit() or len(card_number_clean) < 13 or len(card_number_clean) > 19:
+            return render_with_error_and_form_values("Please enter a valid card number.")
+        
+        # Validazione formato data scadenza (MM/YY)
+        import re
+        if not re.match(r'^(0[1-9]|1[0-2])\/\d{2}$', expiry_date):
+            return render_with_error_and_form_values("Please enter expiry date in MM/YY format.")
+        
+        # Validazione CVV
+        if not cvv.isdigit() or len(cvv) < 3 or len(cvv) > 4:
+            return render_with_error_and_form_values("Please enter a valid CVV (3-4 digits).")
+        
+        # Validazione email di fatturazione
+        email_regex = r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$'
+        if not re.match(email_regex, billing_email):
+            return render_with_error_and_form_values("Please enter a valid billing email address.")
+
+        # Resto della validazione del biglietto (codice esistente)
         if not ticket_type or ticket_type not in Config.TICKET_TYPES:
             return render_with_error_and_form_values("Invalid ticket type selected.")
 
@@ -440,7 +480,6 @@ def buy_ticket():
             valid_days_for_ticket = [Config.FESTIVAL_DAYS[i] for i in day_indices] # Mantiene l'ordine corretto
         elif ticket_type == "full_pass":
             valid_days_for_ticket = Config.FESTIVAL_DAYS
-        # Non serve un 'else' qui grazie al controllo iniziale su ticket_type
 
         # Controlla i limiti di partecipazione giornaliera
         for day_check in valid_days_for_ticket:
@@ -450,6 +489,9 @@ def buy_ticket():
                                    TICKET_TYPES_CONFIG=Config.TICKET_TYPES,
                                    FESTIVAL_DAYS=Config.FESTIVAL_DAYS,
                                    form_values=request.form)
+        
+        # Simulazione processo di pagamento (fittizio)
+        flash("Payment processed successfully! (Demo mode - no real charge)", "info")
         
         purchase_date_str = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
         ticket_id = db.add_ticket(current_user.id, ticket_type, valid_days_for_ticket, purchase_date_str)
@@ -466,7 +508,7 @@ def buy_ticket():
     return render_template('ticket_purchase.html',
                            TICKET_TYPES_CONFIG=Config.TICKET_TYPES,
                            FESTIVAL_DAYS=Config.FESTIVAL_DAYS,
-                           form_values=current_form_values) # current_form_values è {} per GET
+                           form_values=current_form_values) # current_form_values è {} per GETw
 
 
 @app.route('/handle_buy_ticket_action') # Questa route è usata per gestire il caso in cui l'utente non è loggato e clicca su "Buy Ticket"

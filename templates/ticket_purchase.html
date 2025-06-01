@@ -9,49 +9,130 @@
     <hr>
 
     <form method="POST" action="{{ url_for('buy_ticket') }}">
-        <div class="mb-3">
-            <label for="ticket_type" class="form-label fs-5" style="font-family: 'Playfair Display', serif;">Select Ticket Type:</label>
-            <select class="form-select form-select-lg" id="ticket_type" name="ticket_type" required>
-                <option value="" disabled {% if not (form_values and form_values.ticket_type) %}selected{% endif %}>---
-                    Choose Ticket ---</option>
-                {% for type_key, type_info in TICKET_TYPES_CONFIG.items() %}
-                <option value="{{ type_key }}" {% if form_values and form_values.ticket_type==type_key %}selected{%
-                    endif %}>{{ type_info.name }}</option>
-                {% endfor %}
-            </select>
-        </div>
+        <!-- Sezione Selezione Biglietto -->
+        <div class="row">
+            <div class="col-md-8">
+                <h4 class="mb-3" style="font-family: 'Playfair Display', serif;">
+                    <i class="bi bi-ticket-perforated"></i> Ticket Selection
+                </h4>
+                
+                <div class="mb-3">
+                    <label for="ticket_type" class="form-label fs-5" style="font-family: 'Playfair Display', serif;">Select Ticket Type:</label>
+                    <select class="form-select form-select-lg" id="ticket_type" name="ticket_type" required>
+                        <option value="" disabled {% if not (form_values and form_values.ticket_type) %}selected{% endif %}>---
+                            Choose Ticket ---</option>
+                        {% for type_key, type_info in TICKET_TYPES_CONFIG.items() %}
+                        <option value="{{ type_key }}" {% if form_values and form_values.ticket_type==type_key %}selected{%
+                            endif %}>{{ type_info.name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
 
-        <div id="daily_selection_div" class="mb-3 p-3 border rounded">
-            <label class="form-label fs-5"><strong>If choosing Daily Ticket - Select Day:</strong></label><br>
-            {% for day_opt in FESTIVAL_DAYS %}
-            <div class="form-check form-check-inline">
-                <input class="form-check-input" type="radio" name="days_daily" id="day_daily_{{ day_opt|lower }}"
-                    value="{{ day_opt }}" {% if form_values and form_values.ticket_type=='daily' and
-                    form_values.get('days_daily')==day_opt %}checked{% endif %}>
-                <label class="form-check-label" for="day_daily_{{ day_opt|lower }}">{{ day_opt }}</label>
+                <div id="daily_selection_div" class="mb-3 p-3 border rounded bg-light">
+                    <label class="form-label fs-6"><strong>If choosing Daily Ticket - Select Day:</strong></label><br>
+                    {% for day_opt in FESTIVAL_DAYS %}
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="radio" name="days_daily" id="day_daily_{{ day_opt|lower }}"
+                            value="{{ day_opt }}" {% if form_values and form_values.ticket_type=='daily' and
+                            form_values.get('days_daily')==day_opt %}checked{% endif %}>
+                        <label class="form-check-label" for="day_daily_{{ day_opt|lower }}">{{ day_opt }}</label>
+                    </div>
+                    {% endfor %}
+                </div>
+
+                <div id="2day_selection_div" class="mb-3 p-3 border rounded bg-light">
+                    <label class="form-label fs-6"><strong>If choosing 2-Day Pass - Select Two Consecutive
+                            Days:</strong></label><br>
+                    {% for day_opt in FESTIVAL_DAYS %}
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="checkbox" name="days_2day" id="day_2day_{{ day_opt|lower }}"
+                            value="{{ day_opt }}" {% if form_values and form_values.ticket_type=='2-day' and day_opt in
+                            form_values.getlist('days_2day') %}checked{% endif %}>
+                        <label class="form-check-label" for="day_2day_{{ day_opt|lower }}">{{ day_opt }}</label>
+                    </div>
+                    {% endfor %}
+                </div>
+
+                <div id="full_pass_info" class="alert alert-info">
+                    <i class="bi bi-info-circle"></i> The Full Pass grants access to all three festival days: {{ FESTIVAL_DAYS|join(', ') }}.
+                    <br><em>No specific day selection is needed if you choose this option.</em>
+                </div>
             </div>
-            {% endfor %}
-        </div>
 
-        <div id="2day_selection_div" class="mb-3 p-3 border rounded">
-            <label class="form-label fs-5"><strong>If choosing 2-Day Pass - Select Two Consecutive
-                    Days:</strong></label><br>
-            {% for day_opt in FESTIVAL_DAYS %}
-            <div class="form-check form-check-inline">
-                <input class="form-check-input" type="checkbox" name="days_2day" id="day_2day_{{ day_opt|lower }}"
-                    value="{{ day_opt }}" {% if form_values and form_values.ticket_type=='2-day' and day_opt in
-                    form_values.getlist('days_2day') %}checked{% endif %}>
-                <label class="form-check-label" for="day_2day_{{ day_opt|lower }}">{{ day_opt }}</label>
+            <!-- Sezione Checkout -->
+            <div class="col-md-4">
+                <div class="card">
+                    <div class="card-header bg-primary text-white">
+                        <h5 class="mb-0" style="font-family: 'Playfair Display', serif;">
+                            <i class="bi bi-credit-card"></i> Payment Details
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="mb-3">
+                            <label for="card_holder" class="form-label">Cardholder Name</label>
+                            <input type="text" class="form-control" id="card_holder" name="card_holder" 
+                                   placeholder="John Doe" required
+                                   value="{% if form_values %}{{ form_values.get('card_holder', '') }}{% endif %}">
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="card_number" class="form-label">Card Number</label>
+                            <input type="text" class="form-control" id="card_number" name="card_number" 
+                                   placeholder="1234 5678 9012 3456" maxlength="19" required
+                                   value="{% if form_values %}{{ form_values.get('card_number', '') }}{% endif %}">
+                        </div>
+
+                        <div class="row">
+                            <div class="col-8">
+                                <label for="expiry_date" class="form-label">Expiry Date</label>
+                                <input type="text" class="form-control" id="expiry_date" name="expiry_date" 
+                                       placeholder="MM/YY" maxlength="5" required
+                                       value="{% if form_values %}{{ form_values.get('expiry_date', '') }}{% endif %}">
+                            </div>
+                            <div class="col-4">
+                                <label for="cvv" class="form-label">CVV</label>
+                                <input type="text" class="form-control" id="cvv" name="cvv" 
+                                       placeholder="123" maxlength="4" required
+                                       value="{% if form_values %}{{ form_values.get('cvv', '') }}{% endif %}">
+                            </div>
+                        </div>
+
+                        <hr>
+
+                        <div class="mb-3">
+                            <label for="billing_email" class="form-label">Billing Email</label>
+                            <input type="email" class="form-control" id="billing_email" name="billing_email" 
+                                   placeholder="your@email.com" required
+                                   value="{% if form_values %}{{ form_values.get('billing_email', '') }}{% endif %}">
+                        </div>
+
+                        <div class="form-check mb-3">
+                            <input class="form-check-input" type="checkbox" id="terms_accepted" name="terms_accepted" required
+                                   {% if form_values and form_values.get('terms_accepted') %}checked{% endif %}>
+                            <label class="form-check-label small" for="terms_accepted">
+                                I agree to the <a href="#" class="text-decoration-none">Terms & Conditions</a>
+                            </label>
+                        </div>
+
+                        <div class="alert alert-warning small" role="alert">
+                            <i class="bi bi-shield-check"></i> 
+                            <strong>Demo Mode:</strong> This is a demonstration checkout. No real payment will be processed.
+                        </div>
+                    </div>
+                </div>
             </div>
-            {% endfor %}
         </div>
 
-        <div id="full_pass_info" class="alert alert-info">
-            The Full Pass grants access to all three festival days: {{ FESTIVAL_DAYS|join(', ') }}.
-            <br><em>No specific day selection is needed if you choose this option.</em>
+        <!-- Pulsante di Acquisto -->
+        <div class="row mt-4">
+            <div class="col-12 text-center">
+                <button type="submit" class="btn btn-success btn-lg px-5" id="buy_button">
+                    <i class="bi bi-cart-check"></i> Complete Purchase
+                </button>
+            </div>
         </div>
-
-        <button type="submit" class="btn btn-success btn-lg mt-3" id="buy_button">Purchase Ticket</button>
     </form>
 </div>
+
+
 {% endblock %}
