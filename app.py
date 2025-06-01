@@ -440,9 +440,25 @@ def buy_ticket():
             return render_with_error_and_form_values("Please enter a valid card number.")
         
         # Validazione formato data scadenza (MM/YY)
-        import re
-        if not re.match(r'^(0[1-9]|1[0-2])\/\d{2}$', expiry_date):
+       
+        expiry_match = re.match(r'^(0[1-9]|1[0-2])\/(\d{2})$', expiry_date)
+        if not expiry_match:
             return render_with_error_and_form_values("Please enter expiry date in MM/YY format.")
+        
+        # Controllo che la data di scadenza non sia passata
+        try:
+            expiry_month = int(expiry_match.group(1))
+            expiry_year_short = int(expiry_match.group(2))
+            # Assumiamo che YY si riferisca al secolo corrente (20YY)
+            current_year_full = datetime.now().year
+            current_month = datetime.now().month
+            expiry_year_full = 2000 + expiry_year_short
+
+            if expiry_year_full < current_year_full or (expiry_year_full == current_year_full and expiry_month < current_month):
+                return render_with_error_and_form_values("The expiry date entered is in the past. Please use a valid card.")
+        except ValueError:
+             # Questo non dovrebbe accadere se il regex match ha successo, ma è una buona pratica
+            return render_with_error_and_form_values("Invalid expiry date format.")
         
         # Validazione CVV
         if not cvv.isdigit() or len(cvv) < 3 or len(cvv) > 4:
