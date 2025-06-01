@@ -36,7 +36,7 @@ Le seguenti credenziali sono state create dal file `seed_data.py` e possono esse
 Per eseguire l'applicazione localmente, segui questi passaggi:
 
 1.  **Prerequisiti:**
-    *   Assicurati di avere Python 3.x installato.
+    *   Assicurati di avere Python 3.9 installato.
     *   `pip` (Python package installer) deve essere disponibile.
 
 2.  **Setup Ambiente Virtuale (Consigliato):**
