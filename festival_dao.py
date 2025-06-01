@@ -402,7 +402,7 @@ if __name__ == '__main__':
     
     conn = get_db_connection()
     cursor = conn.cursor()
-    cursor.execute("UPDATE PRESENZE_GIORNALIERE SET tickets_sold = ? WHERE festival_day = ?", (200, Friday))
+    cursor.execute("UPDATE PRESENZE_GIORNALIERE SET tickets_sold = ? WHERE festival_day = ?", (5, 'Friday'))
     conn.commit()
     conn.close()
     

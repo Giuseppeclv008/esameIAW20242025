@@ -11,9 +11,7 @@ def seed():
 
     conn = sqlite3.connect(Config.DATABASE)
     cursor = conn.cursor()
-
-
-
+    
     print("Seeding users...")
     users_data = [
         {"email": "organizer1@example.com", "nickname": "FestivalBoss", "password": "password123", "role": "organizer"},

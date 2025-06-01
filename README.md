@@ -125,7 +125,7 @@ Se si desidera eseguire l'applicazione localmente, è comunque possibile seguire
 *   **Dashboard Statistiche (`/organizer/stats`):**
     *   Accessibile tramite un pulsante dedicato nella navbar.
     *   Visualizzazione della percentuale di biglietti venduti per ciascun giorno del festival rispetto alla capienza massima.
-    *   **Nota:** La vendita dei biglietti per il giorno "Friday" è stata parzialmente pre-impostata (manualmente nel DB) a 197 (su 200) per facilitare il test del limite di acquisto biglietti.
+
     *   Tabella con i dettagli di tutti i biglietti venduti (ID biglietto, nickname utente, email utente, tipo biglietto, giorni validi, data acquisto).
     *   Filtro per visualizzare i biglietti per tipo (es. solo "Biglietto Giornaliero").
 *   **Gestione Performance:**
