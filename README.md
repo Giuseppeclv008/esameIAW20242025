@@ -61,11 +61,12 @@ Per eseguire l'applicazione localmente, segui questi passaggi:
     ```
 
 4.  **Inizializzazione e Popolamento Database:**
-    Esegui lo script per creare le tabelle del database e popolarle con dati di esempio (utenti, performance, biglietti):
+    Esegui lo script per creare le tabelle del database e popolarle con dati di esempio (utenti, performance, biglietti) - nel caso 
+    in cui festival.db risultasse vuoto:
     ```bash
     python seed_data.py
     ```
-    Questo creerà (o sovrascriverà se già esistente e le query di `DELETE` sono scommentate in `seed_data.py`) il file `festival.db`.
+    
 
 5.  **Avvio dell'Applicazione Flask:**
     Esegui lo script principale dell'applicazione:
@@ -97,7 +98,7 @@ Se si desidera eseguire l'applicazione localmente, è comunque possibile seguire
 *   **Mappa:** Una mappa Leaflet nella homepage mostra la localizzazione del festival.
 *   **Pulsante Acquisto Biglietto (Flottante):**
     *   Sempre visibile per utenti non registrati o partecipanti senza biglietto.
-    *   Se non registrati, il click reindirizza alla pagina di registrazione con un parametro `next` per tornare all'acquisto biglietto dopo il login.
+    *   Se non registrati, il click reindirizza alla pagina di registrazione.
 
 ### Registrazione e Login
 
@@ -124,7 +125,7 @@ Se si desidera eseguire l'applicazione localmente, è comunque possibile seguire
 *   **Dashboard Statistiche (`/organizer/stats`):**
     *   Accessibile tramite un pulsante dedicato nella navbar.
     *   Visualizzazione della percentuale di biglietti venduti per ciascun giorno del festival rispetto alla capienza massima.
-    *   **Nota:** La vendita dei biglietti per il giorno "Friday" è stata parzialmente pre-impostata (tramite `seed_data.py` o manualmente nel DB) a 197 (su 200) per facilitare il test del limite di acquisto biglietti.
+    *   **Nota:** La vendita dei biglietti per il giorno "Friday" è stata parzialmente pre-impostata (manualmente nel DB) a 197 (su 200) per facilitare il test del limite di acquisto biglietti.
     *   Tabella con i dettagli di tutti i biglietti venduti (ID biglietto, nickname utente, email utente, tipo biglietto, giorni validi, data acquisto).
     *   Filtro per visualizzare i biglietti per tipo (es. solo "Biglietto Giornaliero").
 *   **Gestione Performance:**
