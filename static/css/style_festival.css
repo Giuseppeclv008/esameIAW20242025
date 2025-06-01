@@ -234,7 +234,10 @@ header.sticky-top {
     /* text-decoration: solid; -> Nota: 'solid' non è un valore standard per text-decoration. Potresti volerlo rimuovere o cambiarlo con 'none', 'underline', ecc. */
 }
 /* END CHECKOUT SECTION */
-
+.mycheckoutcard {
+    background-color: #e79801;
+  
+}
 .form-control:focus {
     border-color: #0d6efd;
     box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.25);
