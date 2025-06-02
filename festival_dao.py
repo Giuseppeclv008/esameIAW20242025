@@ -1,5 +1,6 @@
 
 import sqlite3
+import os 
 from datetime import datetime, timedelta
 
 DATABASE_NAME = 'festival.db' # Will be overridden by Config if app is run
@@ -376,34 +377,48 @@ def get_all_daily_attendance():
 def delete_performance(performance_id, requesting_organizer_id):
     conn = get_db_connection()
     cursor = conn.cursor()
+    image_path_to_delete = None # Variabile per memorizzare il percorso dell'immagine
     try:
-        # Prima verifica che la performance esista e appartenga all'organizzatore richiedente
-        performance = conn.execute("SELECT organizer_id FROM PERFORMANCE WHERE id = ?", (performance_id,)).fetchone()
+        # Prima verifica che la performance esista, appartenga all'organizzatore e prendi image_path
+        performance = conn.execute(
+            "SELECT organizer_id, image_path FROM PERFORMANCE WHERE id = ?",
+            (performance_id,)
+        ).fetchone()
+
         if not performance:
             return "not_found" # Performance non trovata
         if performance['organizer_id'] != requesting_organizer_id:
             return "unauthorized" # Non autorizzato a eliminare
 
+        image_path_to_delete = performance['image_path'] # Salva il percorso dell'immagine
+
+        # Elimina il record dal DB
         cursor.execute("DELETE FROM PERFORMANCE WHERE id = ?", (performance_id,))
-        conn.commit()
-        return "success" if cursor.rowcount > 0 else "not_found" # rowcount > 0 se l'eliminazione ha avuto successo
+        
+        if cursor.rowcount > 0: # Se il delete ha avuto effetto (la riga è stata eliminata)
+            conn.commit() # Salva le modifiche al database
+            
+            # Se il record è stato eliminato con successo e c'era un'immagine, prova a cancellarla
+            if image_path_to_delete:
+                # image_path_to_delete è qualcosa come 'images/performances/nomefile.jpg'
+                # Il percorso completo del file è relativo alla cartella 'static'
+                actual_file_path = os.path.join('static', image_path_to_delete)
+                try:
+                    if os.path.exists(actual_file_path):
+                        os.remove(actual_file_path)
+                    else:
+                        print(f"Image file not found, skipping deletion: {actual_file_path}") 
+                except OSError as e:
+                    # Logga l'errore ma non far fallire l'intera operazione se l'eliminazione del file fallisce
+                    print(f"Error deleting image file {actual_file_path}: {e}")
+            return "success"
+        else:
+            
+            conn.rollback()
+            return "not_found" 
     except sqlite3.Error as e:
         conn.rollback() # in caso di errore, annullo la transazione, evito inconsisenze nel db, proprietà di atomicità
         print(f"Database error deleting performance: {e}")
         return "db_error"
     finally:
         conn.close()
-        
-        
-if __name__ == '__main__':
-    # This will initialize the database if the script is run directly
-    # You might want to pass a specific db name from your app config
-    from festival_config import Config
-    
-    conn = get_db_connection()
-    cursor = conn.cursor()
-    cursor.execute("UPDATE PRESENZE_GIORNALIERE SET tickets_sold = ? WHERE festival_day = ?", (5, 'Friday'))
-    conn.commit()
-    conn.close()
-    
-
