@@ -222,8 +222,9 @@ def performance_detail(perf_id):
     if not performance:
         abort(404)
     # Only show if published, or if current user is the organizer of this performance (even if unpublished)
-    if not performance['is_published'] and ( not current_user.is_authenticated ):
+    if not performance['is_published'] and ( not current_user.is_authenticated or current_user.role != 'organizer'):
          abort(404) 
+    
     
     can_buy_ticket = False
     if current_user.is_authenticated and current_user.role == 'participant':
