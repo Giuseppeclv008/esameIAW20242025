@@ -21,7 +21,7 @@ L'archivio `.zip` contiene:
 
 ## Credenziali Utenti di Esempio
 
-Le seguenti credenziali sono state create dal file `seed_data.py` e possono essere utilizzate per testare l'applicazione:
+Le seguenti credenziali possono essere utilizzate per testare l'applicazione:
 
 | Email                      | Nickname      | Password    | Ruolo       |
 | :------------------------- | :------------ | :---------- | :---------- |
@@ -39,16 +39,8 @@ Per eseguire l'applicazione localmente, segui questi passaggi:
     *   Assicurati di avere Python 3.9 installato.
     *   `pip` (Python package installer) deve essere disponibile.
 
-2.  **Setup Ambiente Virtuale (Consigliato):**
-    ```bash
-    python -m venv venv
-    # Su Windows
-    venv\Scripts\activate
-    # Su macOS/Linux
-    source venv/bin/activate
-    ```
 
-3.  **Installazione Dipendenze:**
+2.  **Installazione Dipendenze:**
     Naviga nella directory principale del progetto (dove si trova `requirements.txt`) ed esegui:
     ```bash
     pip install -r requirements.txt
@@ -60,7 +52,7 @@ Per eseguire l'applicazione localmente, segui questi passaggi:
     Werkzeug>=2.0
     ```
 
-4.  **Inizializzazione e Popolamento Database:**
+3.  **Inizializzazione e Popolamento Database:**
     Esegui lo script per creare le tabelle del database e popolarle con dati di esempio (utenti, performance, biglietti) - nel caso 
     in cui festival.db risultasse vuoto:
     ```bash
@@ -68,13 +60,13 @@ Per eseguire l'applicazione localmente, segui questi passaggi:
     ```
     
 
-5.  **Avvio dell'Applicazione Flask:**
+4.  **Avvio dell'Applicazione Flask:**
     Esegui lo script principale dell'applicazione:
     ```bash
     python app.py
     ```
 
-6.  **Accesso all'Applicazione:**
+5.  **Accesso all'Applicazione:**
     Apri il tuo browser web e naviga all'indirizzo: `http://127.0.0.1:5000/`
 
 ## Deploy
@@ -159,6 +151,3 @@ Se si desidera eseguire l'applicazione localmente, è comunque possibile seguire
 *   Messaggi flash per feedback all'utente (successo, errore, informazioni, avvisi).
 *   Gestione di errori comuni come tentativi di accesso a pagine non autorizzate.
 
----
-
-Questo documento dovrebbe fornire una panoramica completa del progetto e delle sue funzionalità.
