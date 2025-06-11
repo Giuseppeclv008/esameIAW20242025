@@ -85,7 +85,7 @@ def add_user(email, nickname, password_hash, role):
             (email, nickname, password_hash, role)
         )
         conn.commit()
-        return cursor.lastrowid
+        return cursor.lastrowid # returns the ID of the newly inserted user
     except sqlite3.IntegrityError: # For UNIQUE constraint on email
         return None
     finally:
@@ -243,7 +243,7 @@ def get_all_ticket_details(ticket_type_filter=None): # Nuova funzione per i dett
     conn = get_db_connection()
     # Selezioniamo l'email e il nickname dell'utente, e tutti i dettagli del biglietto
     # Usiamo LEFT JOIN per assicurarci di prendere tutti i biglietti anche se, per qualche motivo,
-    # un utente fosse stato cancellato (anche se la FK dovrebbe impedirlo).
+    # un utente fosse stato cancellato .
     params = []
     
     base_query = """

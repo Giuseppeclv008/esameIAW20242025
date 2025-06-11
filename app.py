@@ -7,14 +7,15 @@ import os
 from datetime import datetime, timedelta
 import re # Importa il modulo per le espressioni regolari
 
-# Import configurations and DB functions
 from festival_config import Config
 import festival_dao as db
 
-# Initialize Flask App
 app = Flask(__name__)
-app.config.from_object(Config)
-
+app.config.from_object(Config) # Configura l'applicazione Flask con le impostazioni definite in festival_config.py
+                               # .config è un dizionario che contiene le variabili di configurazione dell'applicazione
+                               # in questo modo le variabili definite in festival_config.py vengono caricate nell'applicazione Flask
+                               # mantengo pulito il codice e separo la logica di configurazione dall'applicazione principale
+                               
 # Initialize DB with the name from config
 db.init_db(app.config['DATABASE'])
 
@@ -23,10 +24,10 @@ db.init_db(app.config['DATABASE'])
 login_manager = LoginManager()
 login_manager.init_app(app)
 login_manager.login_view = 'login' # Redirect to 'login' view if @login_required is hit
-login_manager.login_message_category = "info"
-login_manager.login_message = "Please log in to access this page."
+login_manager.login_message_category = "info" # when the user is not logged in, the message will be shown in the template as a flash info message
+login_manager.login_message = "Please log in to access this page." # This message will be shown when the user is not logged in and tries to access a protected route
 
-
+# User class for Flask-Login
 class User(UserMixin):
     def __init__(self, id, email, nickname, role, password_hash=None):
         self.id = id
@@ -48,24 +49,34 @@ class User(UserMixin):
 
 @login_manager.user_loader
 def load_user(user_id):
-    user_data = db.get_user_by_id(int(user_id))
+    user_data = db.get_user_by_id(int(user_id)) # search for the user in the database by ID
     if user_data:
         return User(id=user_data['id'], email=user_data['email'], nickname=user_data['nickname'], role=user_data['role'])
     return None
 
-
+# checks if the uploaded file is allowed based on its extension
+# rsplit is a string method that splits the filename into two parts: the name and the extension
+# it checks if the extension is in the list of allowed extensions defined in the app configuration
+# if the fils is like "image.jpg", rsplit will return ['image', 'jpg'], and the second part is checked against the allowed extensions
+# rsplit splits from the right side, so it only splits at the last dot, allowing for filenames with multiple dots
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in app.config['ALLOWED_EXTENSIONS']
+     
 
-
+# --- Context Processor ---
+# This function is used to inject global variables into all templates
+# executed before all templates are rendered
+# different from app.config.from_object(Config) which loads the configuration variables into the flask project
+# this function loads the variables defined in festival_config.py into all templates making them available globally
 @app.context_processor
-def inject_global_vars(): # prendo le variabli globali da festival_config.py, comuni a tutti i template
+def inject_global_vars():
+    # prendo le variabli globali da festival_config.py, comuni a tutti i template
     # Controlla se l'utente ha già un biglietto
     user_has_ticket = False
     if current_user.is_authenticated and current_user.role == 'participant':
         if db.get_ticket_by_user_id(current_user.id):
             user_has_ticket = True
-            
+    # fondamentalmente, questo context processor permette di avere accesso a queste variabili in tutti i template        
     return dict(
         FESTIVAL_DAYS=Config.FESTIVAL_DAYS,
         FESTIVAL_STAGES=Config.FESTIVAL_STAGES,
@@ -91,7 +102,7 @@ def home():
             stage_filter=stage_filter,
             genre_filter=genre_filter
         )
-    else:
+    else: # Se l'utente è un partecipante o non è autenticato, mostra solo le performance pubblicate
         performances = db.get_all_performances(
             published_only=True, 
             day_filter=day_filter,
@@ -126,13 +137,14 @@ def register():
             return redirect(url_for('register'))
 
         email_regex = r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$'
-        if not re.match(email_regex, email):
+        if not re.match(email_regex, email): # checks if the email matches the regex pattern
             flash("Invalid email format.", "danger")
             return redirect(url_for('register'))
         
         if password != confirm_password:
             flash("Passwords do not match.", "danger")
             return redirect(url_for('register'))
+        
         if role not in ['participant', 'organizer']:
             flash("Invalid role selected.", "danger")
             return redirect(url_for('register'))
@@ -168,15 +180,16 @@ def login():
     if request.method == 'POST':
         email = request.form.get('email')
         password = request.form.get('password')
-        remember = True if request.form.get('remember') else False
+        remember = True if request.form.get('remember') else False 
 
         user_data = db.get_user_by_email(email)
         
         if user_data and check_password_hash(user_data['password_hash'], password):
             user_obj = User(id=user_data['id'], email=user_data['email'], nickname=user_data['nickname'], role=user_data['role'])
-            login_user(user_obj, remember=remember)
+            login_user(user_obj, remember=remember) # if remember is True, the user will be remembered across sessions, sets a remember me cookie in the browser
+                                                    # Store the user ID in the session for later use
             flash(f"Welcome back, {user_obj.nickname}!", "success")
-            next_page = request.args.get('next')
+            next_page = request.args.get('next') # if the user was redirected to the login page with a 'next' parameter, it will be used to redirect them back
             return redirect(next_page or url_for('home'))
         else:
             flash("Invalid email or password.", "danger")
@@ -202,13 +215,12 @@ def profile():
             user_ticket = dict(user_ticket_data)
             user_ticket['valid_days_list'] = user_ticket['valid_days'].split(',')
             # La prima get cerca di prendere il nome del tipo di biglietto, se per caso il valore trovato non è 
-            # presente nel dizionario Config.TICKET_TYPES, allora viene usato  ritornato il secondo argomento della get, 
+            # presente nel dizionario Config.TICKET_TYPES, allora viene ritornato il secondo argomento della get, 
             # un dizionario vuoto, che previene un KeyError.
             # la seconda get serve a prendere il nome del tipo di biglietto dal dzionario ritornato
             # se ancora non è presente, allora viene usato 'Unknown Ticket' come valore di ritorno per segnalare che non è stato trovato il biglietto .
             user_ticket['ticket_type_name'] = Config.TICKET_TYPES.get(user_ticket['ticket_type'], {}).get('name', 'Unknown Ticket')
     elif current_user.role == 'organizer':
-        print(current_user.id)
         # L'organizzatore vede le sue bozze E tutte le performance pubblicate da chiunque
         all_festival_performances = db.get_all_performances()
 
@@ -221,7 +233,7 @@ def performance_detail(perf_id):
     performance = db.get_performance_by_id(perf_id)
     if not performance:
         abort(404)
-    # Only show if published, or if current user is the organizer of this performance (even if unpublished)
+    # Only show if published, or if current user is an organizer (even if unpublished)
     if not performance['is_published'] and ( not current_user.is_authenticated or current_user.role != 'organizer'):
          abort(404) 
     
@@ -271,7 +283,7 @@ def manage_performance(perf_id=None):
         # funzione per gestire errori nell'inserimento dei dati 
         def handle_validation_failure(message, is_editing_from_page=False): 
             flash(message, "danger")
-            # Se l'utente stava sulla pagina /manage_performance (sta modificando da lì o creando da lì)
+            # Se l'utente era sulla pagina /manage_performance (sta modificando da lì o creando da lì)
             if is_editing_from_page or (not perf_id and request.referrer and url_for('manage_performance') in request.referrer.split('?')[0]):
                  return render_template('manage_performance.html', 
                                         performance=performance_to_edit if perf_id else request.form, 
@@ -319,7 +331,7 @@ def manage_performance(perf_id=None):
                 # Usa il percorso completo per salvare l'immagine
                 full_image_save_path = os.path.join(app.root_path, app.config['UPLOAD_FOLDER'], unique_filename)
                 # se non esiste la cartella, la crea
-                os.makedirs(os.path.join(app.root_path, app.config['UPLOAD_FOLDER']), exist_ok=True)
+                os.makedirs(os.path.join(app.root_path, app.config['UPLOAD_FOLDER']), exist_ok=True) # if the directory does not exist, it will be created, if it exists, it will not be created again
                 image_file.save(full_image_save_path)
                 # utilizzato os.path.join perchè il percorso file può essere diverso su sistemi operativi diversi
                 # rimosso "static/" dal percorso per salvare l'immagine nel DB perchè per richiamare le immagini facciamo già riferimento all acartella static
@@ -333,7 +345,7 @@ def manage_performance(perf_id=None):
             success = db.update_performance(
                 perf_id, artist_name, day, start_time, duration_int,
                 description, stage_name, genre, 
-                image_path=image_path_to_save if (image_file and image_file.filename != '') else None # Passa None se non si aggiorna l'immagine
+                image_path=image_path_to_save if (image_file and image_file.filename != '') else None # se non è stata caricata una nuova immagine viene usato il path della vecchia immagine, già nel 
             )
             if success:
                 flash("Performance updated successfully!", "success")
@@ -399,7 +411,7 @@ def buy_ticket():
         flash("You have already purchased a ticket for this festival.", "info")
         return redirect(url_for('profile'))
 
-    # Oggetto per ripopolare il form in caso di GET o errore POST
+    #  per ripopolare il form in caso di GET o errore POST
     current_form_values = request.form if request.method == 'POST' else {}
 
     if request.method == 'POST':
@@ -408,7 +420,7 @@ def buy_ticket():
         selected_day_for_daily = request.form.get('days_daily')    # Radio button, un solo valore
         selected_days_for_2day = request.form.getlist('days_2day') # Checkbox, lista di valori
         
-        # Nuovi campi per il checkout
+        # campi per il checkout
         card_holder = request.form.get('card_holder')
         card_number = request.form.get('card_number')
         expiry_date = request.form.get('expiry_date')
@@ -431,7 +443,7 @@ def buy_ticket():
         if not terms_accepted:
             return render_with_error_and_form_values("You must accept the Terms & Conditions to proceed.")
         
-        # Validazioni base sui dati della carta (fittizie ma realistiche)
+        # Validazioni base sui dati della carta 
         if len(card_holder.strip()) < 2:
             return render_with_error_and_form_values("Please enter a valid cardholder name.")
         
@@ -448,6 +460,8 @@ def buy_ticket():
         
         # Controllo che la data di scadenza non sia passata
         try:
+            # expiry_match.groups() restituirà una tupla con i gruppi catturati dal regex
+            # Il primo gruppo è il mese, il secondo è l'anno
             expiry_month = int(expiry_match.group(1))
             expiry_year_short = int(expiry_match.group(2))
             # Assumiamo che YY si riferisca al secolo corrente (20YY)
@@ -458,7 +472,7 @@ def buy_ticket():
             if expiry_year_full < current_year_full or (expiry_year_full == current_year_full and expiry_month < current_month):
                 return render_with_error_and_form_values("The expiry date entered is in the past. Please use a valid card.")
         except ValueError:
-             # Questo non dovrebbe accadere se il regex match ha successo, ma è una buona pratica
+             # Controllo aggiuntivo per gestire errori di inserimento non catturati 
             return render_with_error_and_form_values("Invalid expiry date format.")
         
         # Validazione CVV
@@ -470,7 +484,8 @@ def buy_ticket():
         if not re.match(email_regex, billing_email):
             return render_with_error_and_form_values("Please enter a valid billing email address.")
 
-        # Resto della validazione del biglietto (codice esistente)
+        # Validazione tipo di biglietto
+        # Se non è stato selezionato un tipo di biglietto, ritorna un errore
         if not ticket_type or ticket_type not in Config.TICKET_TYPES:
             return render_with_error_and_form_values("Invalid ticket type selected.")
 
@@ -485,14 +500,14 @@ def buy_ticket():
             if not selected_days_for_2day or len(selected_days_for_2day) != 2:
                 return render_with_error_and_form_values("Please select exactly two days for a 2-Day Pass.")
             
-            # Controlla che i giorni selezionati siano validi giorni del festival
+            # Controlla che i giorni selezionati siano giorni validi del festival
             for day_val in selected_days_for_2day:
                 if day_val not in Config.FESTIVAL_DAYS:
                     return render_with_error_and_form_values(f"Invalid day selected for 2-Day Pass: {day_val}.")
 
             # Controlla la consecutività
-            day_indices = sorted([Config.FESTIVAL_DAYS.index(d) for d in selected_days_for_2day])
-            if day_indices[1] - day_indices[0] != 1:
+            day_indices = sorted([Config.FESTIVAL_DAYS.index(d) for d in selected_days_for_2day]) # prende gli indici dei giorni selezionati
+            if day_indices[1] - day_indices[0] != 1: # se i giorni sono consecutivi sono distanti 1
                 return render_with_error_and_form_values("For a 2-Day Pass, selected days must be consecutive.")
             valid_days_for_ticket = [Config.FESTIVAL_DAYS[i] for i in day_indices] # Mantiene l'ordine corretto
         elif ticket_type == "full_pass":
@@ -507,7 +522,7 @@ def buy_ticket():
                                    FESTIVAL_DAYS=Config.FESTIVAL_DAYS,
                                    form_values=request.form)
         
-        # Simulazione processo di pagamento (fittizio)
+        # Simulazione processo di pagamento 
         flash("Payment processed successfully! (Demo mode - no real charge)", "info")
         
         purchase_date_str = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
@@ -538,9 +553,6 @@ def handle_buy_ticket_action():
     elif current_user.is_anonymous:
         flash("Please register or log in to purchase a ticket", "info")
         return redirect(url_for('register', next=url_for('buy_ticket')))
-
-
-
 
 
 
