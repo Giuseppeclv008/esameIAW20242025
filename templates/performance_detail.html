@@ -21,7 +21,7 @@
                             <path
                                 d="M11 1.5v1h3.5a.5.5 0 0 1 0 1h-.538l-.853 10.66A2 2 0 0 1 11.115 16h-6.23a2 2 0 0 1-1.994-1.84L2.038 3.5H1.5a.5.5 0 0 1 0-1H5v-1A1.5 1.5 0 0 1 6.5 0h3A1.5 1.5 0 0 1 11 1.5m-5 0v1h4v-1a.5.5 0 0 0-.5-.5h-3a.5.5 0 0 0-.5.5M4.5 5.029l.5 8.5a.5.5 0 1 0 .998-.06l-.5-8.5a.5.5 0 1 0-.998.06m6.53-.528a.5.5 0 0 0-.528.47l-.5 8.5a.5.5 0 0 0 .998.058l.5-8.5a.5.5 0 0 0-.47-.528M8 4.5a.5.5 0 0 0-.5.5v8.5a.5.5 0 0 0 1 0V5a.5.5 0 0 0-.5-.5" />
                         </svg>
-                        Delete Performance
+                        Elimina Performance
                     </button>
                 </form>
             </div>
@@ -31,20 +31,21 @@
                 {% if not performance.is_published %}
                 {% if current_user.is_authenticated and current_user.role == 'organizer' and performance.organizer_id ==
                 current_user.id and not performance.is_published %}
-                <a href="{{ url_for('manage_performance', perf_id=performance.id) }}" class="btn myeditbutton">Edit
+                <a href="{{ url_for('manage_performance', perf_id=performance.id) }}" class="btn myeditbutton">Modifica
                     Draft</a>
                 <form action="{{ url_for('publish_performance', perf_id=performance.id) }}" method="POST"
                     style="display: inline;">
-                    <button type="submit" class="btn mypublishbtn">Publish Performance</button>
+                    <button type="submit" class="btn mypublishbtn">Pubblica Performance</button>
                 </form>
                 {% endif %}
                 {% if current_user.is_authenticated and current_user.role == 'organizer' and performance.organizer_id !=
                 current_user.id %}
-                <p class="mt-2 text-danger"><small>This draft is from organizer: {{ performance.organizer_id }}</small>
+                <p class="mt-2 text-danger"><small>Questa Bozza è Stata Creata da: {{ performance.organizer_id
+                        }}</small>
                     {% endif %}
-                <p class="mt-2 text-warning">This is a draft and only visible to you.</p>
+                <p class="mt-2 text-warning">Questa è una bozza ed è visibile solo agli organizzatori.</p>
                 {% else %}
-                <p class="mt-2 text-success"><small>This performance is published.</small></p>
+                <p class="mt-2 text-success"><small>Performance pubblicata.</small></p>
                 {% endif %}
             </div>
             {% endif %}
@@ -53,20 +54,21 @@
             <h1 style="font-family: 'Playfair Display', serif;">{{ performance.artist_name }}</h1>
             <p class="lead">Genre: {{ performance.genre }}</p>
             <hr>
-            <h4 style="font-family: 'Playfair Display', serif;">Details</h4>
+            <h4 style="font-family: 'Playfair Display', serif;">Informazioni</h4>
             <ul class="list-unstyled">
-                <li style="font-family: 'Playfair Display', serif;"><strong>Day:</strong> {{ performance.day }}</li>
-                <li style="font-family: 'Playfair Display', serif;"><strong>Time:</strong> {{ performance.start_time }}
+                <li style="font-family: 'Playfair Display', serif;"><strong>Giorno:</strong> {{ performance.day }}</li>
+                <li style="font-family: 'Playfair Display', serif;"><strong>Orario:</strong> {{ performance.start_time
+                    }}
                 </li>
-                <li style="font-family: 'Playfair Display', serif;"><strong>Duration:</strong> {{
+                <li style="font-family: 'Playfair Display', serif;"><strong>Durata:</strong> {{
                     performance.duration_minutes }} minutes</li>
-                <li style="font-family: 'Playfair Display', serif;"><strong>Stage:</strong> {{ performance.stage_name }}
+                <li style="font-family: 'Playfair Display', serif;"><strong>Palco:</strong> {{ performance.stage_name }}
                 </li>
                 <li style="font-family: 'Playfair Display', serif;"><strong>Organized by:</strong> {{
                     performance.organizer_nickname }}</li>
             </ul>
 
-            <h4 style="font-family: 'Playfair Display', serif;">Description</h4>
+            <h4 style="font-family: 'Playfair Display', serif;">Descrizione</h4>
             <p>{{ performance.description | safe }}</p> {# Use safe if description can contain HTML from trusted source
             #}
 
@@ -74,11 +76,11 @@
             <div class="mt-4 p-3 bg-light rounded">
                 <h4>Interested?</h4>
                 <p>You can purchase tickets to attend this and other performances!</p>
-                <a href="{{ url_for('buy_ticket') }}" class="btn mypurchasebtn btn-lg">Buy Tickets</a>
+                <a href="{{ url_for('buy_ticket') }}" class="btn mypurchasebtn btn-lg">Compra un Biglietto</a>
             </div>
             {% elif current_user.is_authenticated and current_user.role == 'participant' %}
             <div class="mt-4 p-3 bg-light rounded">
-                <p>You already have a ticket for this festival. Check your <a href="{{url_for('profile')}}">profile</a>.
+                <p>You already have a ticket for this festival. Check your <a href="{{url_for('profile')}}">Profilo</a>.
                 </p>
             </div>
             {% elif current_user.is_authenticated and current_user.role == 'organizer' %}
@@ -93,8 +95,7 @@
                         Log in
                     </a>
                     or <a type="button" class="btn btn-primary unreg_btn mybuttoncolors"
-                        href="{{url_for('register')}}">register</a> as
-                    a participant to buy tickets!
+                        href="{{url_for('register')}}">register</a> come un partecipante per acquistare un biglietto.
                 </p>
             </div>
             {% endif %}

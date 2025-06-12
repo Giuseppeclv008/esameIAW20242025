@@ -14,7 +14,7 @@
                     <h5 class="card-title">{{ current_user.nickname }}</h5>
                     <p class="card-text">
                         <strong>Email:</strong> {{ current_user.email }}<br>
-                        <strong>Role:</strong> {{ current_user.role.capitalize() }}
+                        <strong>Ruolo:</strong> {{ current_user.role.capitalize() }}
                         {% if current_user.role == 'organizer' %}
                         <br><strong>Organizer ID:</strong> {{ current_user.id }}
                         {% endif %}
@@ -31,20 +31,20 @@
             <div class="card bg-light mb-3">
                 <div class="card-header">{{ user_ticket.ticket_type_name }}</div>
                 <div class="card-body">
-                    <h5 class="card-title">Valid for: {{ user_ticket.valid_days_list | join(', ') }}</h5>
-                    <p class="card-text"><small class="text-muted">Purchased on: {{ user_ticket.purchase_date.split('
+                    <h5 class="card-title">Valido per: {{ user_ticket.valid_days_list | join(', ') }}</h5>
+                    <p class="card-text"><small class="text-muted">Comprato in Data: {{ user_ticket.purchase_date.split('
                             ')[0] }}</small></p>
                 </div>
             </div>
             {% else %}
 
-            <p style="font-family: 'Playfair Display', serif;">You haven't purchased a ticket yet.</p>
-            <a href="{{ url_for('buy_ticket') }}" class="btn btn-success">Buy Ticket Now!</a>
+            <p style="font-family: 'Playfair Display', serif;">Non hai Ancora Comprato un Biglietto.</p>
+            <a href="{{ url_for('buy_ticket') }}" class="btn btn-success">Compra un Biglietto Adesso!</a>
             {% endif %}
             <!-- SEZIONE ORGANIZZATORI -->
             {% elif current_user.role == 'organizer' %}
             <h3 style="font-family: 'Playfair Display', serif;">My Managed Performances</h3>
-            <a href="{{ url_for('manage_performance') }}" class="btn mynewperfbutton mb-3">Add New Performance</a>
+            <a href="{{ url_for('manage_performance') }}" class="btn mynewperfbutton mb-3">Aggiungi una Nuova Performance</a>
             {% if performances %}
             <div class="list-group">
                 {% for perf in performances %}
@@ -52,25 +52,25 @@
                 <div
                     class="list-group-item list-group-item-action flex-column align-items-start {% if not perf.is_published %}list-group-item-warning{% endif %}">
                     <div class="d-flex w-100 justify-content-between">
-                        <h5 class="mb-1">{{ perf.artist_name }} <small>({{ perf.day }} at {{ perf.start_time }})</small>
+                        <h5 class="mb-1">{{ perf.artist_name }} <small>({{ perf.day }} alle {{ perf.start_time }})</small>
                         </h5>
                         <small>{{ perf.stage_name }}</small>
                     </div>
                     <p class="mb-1">{{ perf.description[:100] }}{% if perf.description|length > 100 %}...{% endif %}</p>
-                    <small class="text-muted">Genre: {{ perf.genre }} | Duration: {{ perf.duration_minutes }}
+                    <small class="text-muted">Genere: {{ perf.genre }} | Durata: {{ perf.duration_minutes }}
                         mins</small>
                     <div class="mt-2">
                         <a href="{{ url_for('performance_detail', perf_id=perf.id) }}"
-                            class="btn btn-sm myviewbutton">View</a>
+                            class="btn btn-sm myviewbutton">Guarda</a>
                         {% if not perf.is_published %}
                         <a href="{{ url_for('manage_performance', perf_id=perf.id) }}"
-                            class="btn btn-sm myeditbutton">Edit</a>
+                            class="btn btn-sm myeditbutton">Modifica</a>
                         <form action="{{ url_for('publish_performance', perf_id=perf.id) }}" method="POST"
                             style="display: inline;">
-                            <button type="submit" class="btn btn-sm mybuttoncolors">Publish</button>
+                            <button type="submit" class="btn btn-sm mybuttoncolors">Pubblica</button>
                         </form>
                         {% else %}
-                        <span class="badge bg-success">Published</span>
+                        <span class="badge bg-success">Pubblicata</span>
                         {% endif %}
                         {% if perf.organizer_id == current_user.id %}
                         <form action="{{ url_for('delete_performance_route', perf_id=perf.id) }}" method="POST"
@@ -83,7 +83,7 @@
                                     <path
                                         d="M11 1.5v1h3.5a.5.5 0 0 1 0 1h-.538l-.853 10.66A2 2 0 0 1 11.115 16h-6.23a2 2 0 0 1-1.994-1.84L2.038 3.5H1.5a.5.5 0 0 1 0-1H5v-1A1.5 1.5 0 0 1 6.5 0h3A1.5 1.5 0 0 1 11 1.5m-5 0v1h4v-1a.5.5 0 0 0-.5-.5h-3a.5.5 0 0 0-.5.5M4.5 5.029l.5 8.5a.5.5 0 1 0 .998-.06l-.5-8.5a.5.5 0 1 0-.998.06m6.53-.528a.5.5 0 0 0-.528.47l-.5 8.5a.5.5 0 0 0 .998.058l.5-8.5a.5.5 0 0 0-.47-.528M8 4.5a.5.5 0 0 0-.5.5v8.5a.5.5 0 0 0 1 0V5a.5.5 0 0 0-.5-.5" />
                                 </svg>
-                                Delete
+                                Elimina
                             </button>
                         </form>
                         {% endif %}
@@ -93,7 +93,7 @@
                 {% endfor %}
             </div>
             {% else %}
-            <p>You haven't created any performances yet.</p>
+            <p>Non è stata creata alcuna performance.</p>
             {% endif %}
             {% endif %}
         </div>
