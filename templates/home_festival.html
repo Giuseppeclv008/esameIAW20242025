@@ -112,7 +112,7 @@
     <div class="col-lg-3 d-none d-lg-block"> <!-- Nascondi questo elemento su schermi piccoli -->
         <!-- POSITION STICKY PERMETTE DI AVERE IL FILTRO FERMO CON LO SCORRIMENTO -->
         <!-- FILTRO -->
-        <div class="position-sticky" style="top: 100px;">
+        <div class="position-sticky myfilterposition">
             <h4 style="font-family: 'Playfair Display', serif;">Filtra Performance</h4>
             <!-- UTILIZZO UN METHOD GET PERCHE I DATI DI QUESTO FORM MI SEVONO SOLAMENTE PER FILTRARE, NON VERRANNO USATI PER AGGIUNGERE DATI O MODIFACRE IL DATABASE -->
             <form method="GET" action="{{ url_for('home') }}">
@@ -191,7 +191,7 @@
                 <!-- SEGMENTO DELLA SINGOLA CARD RELATIVA ALLE PERFORMANCE PUBBLICATE -->
                 <div class="card h-100">
                     <img src="{{ url_for('static', filename=perf.image_path or 'images/logo/LogoFestivalDelTacco.jpeg') }}"
-                        class="card-img-top" alt="{{ perf.artist_name }}" style="height: 200px; object-fit: cover;">
+                        class="card-img-top" alt="{{ perf.artist_name }}">
                     <div class="card-body">
                         <h5 class="card-title">{{ perf.artist_name }}</h5>
                         <h6 class="card-subtitle mb-2 text-muted">{{ perf.genre }}</h6>

@@ -35,8 +35,7 @@
                     <a href="{{ url_for('home') }}"
                         class="d-flex align-items-center text-dark text-decoration-none me-lg-auto ms-2">
                         <img src="{{ url_for('static', filename='images/logo/LogoFestivalDelTacco.jpeg') }}"
-                            alt="Festival del Tacco" class="img-fluid rounded-circle"
-                            style="height: 100px; width: 100px; object-fit: cover;" loading="lazy">
+                            alt="Festival del Tacco" class="img-fluid rounded-circle myfestivalicon" loading="lazy">
                         <span class="fs-3 ms-2" style="font-family: 'Playfair Display', serif;">Festival Del
                             Tacco</span>
                     </a>
@@ -228,7 +227,7 @@
     <!-- PULSANTE ACQUISTO BIGLIETTO -->
     {% if (current_user.is_authenticated and current_user.role == 'participant' and not g_user_has_ticket) or not
     current_user.is_authenticated %}
-    <div class="position-fixed bottom-0 end-0 p-3" style="z-index: 1030;">
+    <div class="position-fixed bottom-0 end-0 p-3 mybuybuttonfixed">
 
         {# Il link cambia in base allo stato di autenticazione #}
         <a href="{{ url_for('handle_buy_ticket_action') }}" class="btn btn-success btn-lg shadow"

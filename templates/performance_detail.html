@@ -12,8 +12,7 @@
             current_user.id %}
             <div class="mt-2">
                 <form action="{{ url_for('delete_performance_route', perf_id=performance.id) }}" method="POST"
-                    style="display: inline-block;"
-                    onsubmit="return confirm('Are you sure you want to delete this performance? This action cannot be undone.');">
+                    class="mybuttonBlock">
 
                     <button type="submit" class="btn btn-danger btn-sm">
                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
@@ -34,13 +33,14 @@
                 <a href="{{ url_for('manage_performance', perf_id=performance.id) }}" class="btn myeditbutton">Modifica
                     Draft</a>
                 <form action="{{ url_for('publish_performance', perf_id=performance.id) }}" method="POST"
-                    style="display: inline;">
-                    <button type="submit" class="btn mypublishbtn">Pubblica Performance</button>
+                    class="mybuttoninline">
+                    <button type="submit" class="btn mypublishbtn ">Pubblica Performance</button>
                 </form>
                 {% endif %}
                 {% if current_user.is_authenticated and current_user.role == 'organizer' and performance.organizer_id !=
                 current_user.id %}
-                <p class="mt-2 text-danger"><small>Questa Bozza è Stata Creata dall'organizzatore numero: {{ performance.organizer_id
+                <p class="mt-2 text-danger"><small>Questa Bozza è Stata Creata dall'organizzatore numero: {{
+                        performance.organizer_id
                         }}</small>
                     {% endif %}
                 <p class="mt-2 text-warning">Questa è una bozza ed è visibile solo agli organizzatori.</p>

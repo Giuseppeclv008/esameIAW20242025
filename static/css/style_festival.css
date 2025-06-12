@@ -6,13 +6,27 @@ body {
     display: flex;
     flex-direction: column;
 }
+.myfestivalicon{
+    height: 100px;
+    width: 100px;
+    object-fit: cover;
+}
 
+.myperfimageedit{
+    max-height: 50px; 
+    margin-top: 5px;
+}
+
+.myfilterposition{
+    top: 100px;
+}
 .festival-map-container {
     height: 450px;
     width: 100%;
     border: 1px solid #ccc;
     border-radius: 0.375rem;
     box-shadow: 0 .125rem .25rem rgba(0, 0, 0, .075);
+    
 
 }
 
@@ -110,7 +124,7 @@ header.sticky-top {
 /* Progress bar text visibility */
 .progress-bar {
     color: #212529;
-    /* Dark text for better readability on light progress bars */
+   
     font-weight: bold;
 }
 
@@ -140,7 +154,15 @@ header.sticky-top {
     border: #3e7adb;
     color: #284277;
 }
-
+.mybuttonBlock {
+    display: inline-block;
+}
+.mybuttoninline {
+    display: inline;
+}
+.mybuybuttonfixed{
+    z-index: 1030;
+}
 .myeditbutton:hover,
 .myclearbutton:hover {
     background-color: #654069;
@@ -230,10 +252,10 @@ header.sticky-top {
 .btn-outline {
     border-color: #e79801;
     color: #e79801;
-    /* Colore del testo per lo stato normale */
-    /* text-decoration: solid; -> Nota: 'solid' non è un valore standard per text-decoration. Potresti volerlo rimuovere o cambiarlo con 'none', 'underline', ecc. */
+
 }
-/* END CHECKOUT SECTION */
+
+/* start CHECKOUT SECTION */
 .mycheckoutcard {
     background-color: #e79801;
   
@@ -256,7 +278,7 @@ header.sticky-top {
     background-color: #fff3cd;
     border-color: #ffecb5;
 }
-/* END CHECKOUT SECTION */
+/* end CHECKOUT SECTION */
 
 /* Padding-top personalizzato per il main in base alla dimensione dello schermo */
 @media (max-width: 576px) {
