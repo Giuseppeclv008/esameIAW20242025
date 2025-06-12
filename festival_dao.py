@@ -2,6 +2,7 @@
 import sqlite3
 import os 
 from datetime import datetime, timedelta
+from festival_config import Config
 
 DATABASE_NAME = 'festival.db' # Will be overridden by Config if app is run
 
@@ -13,7 +14,7 @@ def get_db_connection():
 def init_db(db_name='festival.db'):
     global DATABASE_NAME
     DATABASE_NAME = db_name
-    conn = get_db_connection()
+    conn = get_db_connection() 
     cursor = conn.cursor()
 
     # UTENTI Table
@@ -24,7 +25,7 @@ def init_db(db_name='festival.db'):
             nickname TEXT NOT NULL,
             password_hash TEXT NOT NULL,
             role TEXT NOT NULL CHECK(role IN ('participant', 'organizer'))
-        )
+        ) 
     ''')
 
     # PERFORMANCE Table
@@ -67,7 +68,7 @@ def init_db(db_name='festival.db'):
     ''')
     
     # Initialize daily attendance if not present
-    from festival_config import Config
+    
     for day in Config.FESTIVAL_DAYS:
         cursor.execute("INSERT OR IGNORE INTO PRESENZE_GIORNALIERE (festival_day, tickets_sold) VALUES (?, 0)", (day,))
 
