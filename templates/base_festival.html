@@ -66,8 +66,6 @@
                                         d="M0 10a8 8 0 1 1 15.547 2.661c-.442 1.253-1.845 1.602-2.932 1.25C11.309 13.488 9.475 13 8 13c-1.474 0-3.31.488-4.615.911-1.087.352-2.49.003-2.932-1.25A8 8 0 0 1 0 10m8-7a7 7 0 0 0-6.603 9.329c.203.575.923.876 1.68.63C4.397 12.533 6.358 12 8 12s3.604.532 4.923.96c.757.245 1.477-.056 1.68-.631A7 7 0 0 0 8 3" />
                                 </svg>
                                 TicketStats
-
-
                             </a>
 
                         </li>
@@ -88,9 +86,8 @@
 
                                 {% if current_user.role == 'participant' %}
                                 <img src="{{ url_for('static', filename='images/logo/partecipant.png') }}"
-                                    alt="partecipant_image" width="40" height="40" class="rounded-circle">
+                                    alt="partecipant_image" width="50" height="50" class="rounded-circle">
                                 {% endif %}
-
                                 {{ current_user.nickname }} ({{ current_user.role }})
                             </a>
                             <ul class="dropdown-menu text-small" aria-labelledby="dropdownUser1">
@@ -100,7 +97,8 @@
                                         Performance</a>
                                 </li>
                                 {% endif %}
-                                {% if current_user.role == 'participant' and not g.user_has_ticket %}
+                                <!-- g_user_has_ticket is given by the context processor dictionary -->
+                                {% if current_user.role == 'participant' and not g_user_has_ticket %}
                                 <li><a class="dropdown-item" href="{{ url_for('buy_ticket') }}">Buy Ticket</a></li>
                                 {% endif %}
                                 <li>
@@ -238,7 +236,7 @@
                 <path
                     d="M0 4.5A1.5 1.5 0 0 1 1.5 3h13A1.5 1.5 0 0 1 16 4.5V6a.5.5 0 0 1-.5.5 1.5 1.5 0 0 0 0 3 .5.5 0 0 1 .5.5v1.5a1.5 1.5 0 0 1-1.5 1.5h-13A1.5 1.5 0 0 1 0 11.5V10a.5.5 0 0 1 .5-.5 1.5 1.5 0 1 0 0-3A.5.5 0 0 1 0 6zM1.5 4a.5.5 0 0 0-.5.5v1.05a2.5 2.5 0 0 1 0 4.9v1.05a.5.5 0 0 0 .5.5h13a.5.5 0 0 0 .5-.5v-1.05a2.5 2.5 0 0 1 0-4.9V4.5a.5.5 0 0 0-.5-.5z" />
             </svg>
-            Compra Biglietto!
+            Compra unBiglietto!
         </a>
     </div>
     {% endif %}
