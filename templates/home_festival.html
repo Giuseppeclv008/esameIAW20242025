@@ -27,7 +27,7 @@
 
                     <div class="carousel-caption d-none d-md-block bg-dark bg-opacity-50 p-2 rounded">
                         <h5 style="font-family: 'Playfair Display', serif;">{{ perf_item.artist_name }}</h5>
-                        <p>{{ perf_item.genre }} - {{ perf_item.day }} at {{ perf_item.start_time }}</p>
+                        <p>{{ perf_item.genre }} - {{ perf_item.day }} alle {{ perf_item.start_time }}</p>
                     </div>
                 </div>
                 {% endfor %}
@@ -35,7 +35,7 @@
             <button class="carousel-control-prev" type="button" data-bs-target="#performanceCarousel"
                 data-bs-slide="prev">
                 <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                <span class="visually-hidden">Previous</span>
+                <span class="visually-hidden">Precedente</span>
             </button>
             <button class="carousel-control-next" type="button" data-bs-target="#performanceCarousel"
                 data-bs-slide="next">
@@ -58,7 +58,7 @@
             <path
                 d="M6 10.5a.5.5 0 0 1 .5-.5h3a.5.5 0 0 1 0 1h-3a.5.5 0 0 1-.5-.5m-2-3a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7a.5.5 0 0 1-.5-.5m-2-3a.5.5 0 0 1 .5-.5h11a.5.5 0 0 1 0 1h-11a.5.5 0 0 1-.5-.5" />
         </svg>
-        Filter Performances
+        Filtra Performance
     </button>
 </div>
 
@@ -67,8 +67,8 @@
     <div class="modal-dialog modal-dialog-scrollable"> <!-- modal-dialog-scrollable per contenuti lunghi -->
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="filterModalLabel" style="font-family: 'Playfair Display', serif;">Filter
-                    Performances</h5>
+                <h5 class="modal-title" id="filterModalLabel" style="font-family: 'Playfair Display', serif;">Filtra
+                    Performance</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
@@ -113,13 +113,13 @@
         <!-- POSITION STICKY PERMETTE DI AVERE IL FILTRO FERMO CON LO SCORRIMENTO -->
         <!-- FILTRO -->
         <div class="position-sticky" style="top: 100px;">
-            <h4 style="font-family: 'Playfair Display', serif;">Filter Performances</h4>
+            <h4 style="font-family: 'Playfair Display', serif;">Filtra Performance</h4>
             <!-- UTILIZZO UN METHOD GET PERCHE I DATI DI QUESTO FORM MI SEVONO SOLAMENTE PER FILTRARE, NON VERRANNO USATI PER AGGIUNGERE DATI O MODIFACRE IL DATABASE -->
             <form method="GET" action="{{ url_for('home') }}">
                 <div class="mb-3">
-                    <label for="day" class="form-label">Day</label>
+                    <label for="day" class="form-label">Giorno</label>
                     <select name="day" id="day" class="form-select">
-                        <option value="">All Days</option>
+                        <option value="">Tutti i Giorni</option>
                         {% for day_opt in FESTIVAL_DAYS %}
                         <!-- QUESTI FRAMMENTI DI JINJA CON GLI IF SERVONO PER MANTENERE LE SELEZIONI FATTE PRIMA DEL SUBMIT -->
                         <option value="{{ day_opt }}" {% if selected_day==day_opt %}selected{% endif %}>{{ day_opt }}
@@ -128,9 +128,9 @@
                     </select>
                 </div>
                 <div class="mb-3">
-                    <label for="stage" class="form-label">Stage</label>
+                    <label for="stage" class="form-label">Palco</label>
                     <select name="stage" id="stage" class="form-select">
-                        <option value="">All Stages</option>
+                        <option value="">Tutti i palchi</option>
                         {% for stage_opt in FESTIVAL_STAGES %}
                         <option value="{{ stage_opt }}" {% if selected_stage==stage_opt %}selected{% endif %}>{{
                             stage_opt
@@ -139,7 +139,7 @@
                     </select>
                 </div>
                 <div class="mb-3">
-                    <label for="genre" class="form-label">Genre</label>
+                    <label for="genre" class="form-label">Genere</label>
                     <input type="text" name="genre" id="genre" class="form-control" value="{{ selected_genre or '' }}"
                         placeholder="e.g., Rock, Electronic">
                 </div>
@@ -173,17 +173,17 @@
                             <strong>Stage:</strong> {{ perf.stage_name }}
                         </p>
 
-                        <p class="text-warning fw-bold"><small>DRAFT - Not Visible to Public</small></p>
+                        <p class="text-warning fw-bold"><small>BOZZA - Non Visibile al Pubblico</small></p>
 
                     </div>
                     <div class="card-footer">
                         <a href="{{ url_for('performance_detail', perf_id=perf.id) }}"
-                            class="btn btn-sm btn-outline">View Details</a>
+                            class="btn btn-sm btn-outline">Guarda i Dettagli</a>
                         {% if current_user.is_authenticated and current_user.role == 'organizer' and
                         perf.organizer_id
                         == current_user.id and not perf.is_published %}
                         <a href="{{ url_for('manage_performance', perf_id=perf.id) }}"
-                            class="btn btn-sm mybtn-outline-edit">Edit</a>
+                            class="btn btn-sm mybtn-outline-edit">Modifica</a>
                         {% endif %}
                     </div>
                 </div>
@@ -204,7 +204,7 @@
                     </div>
                     <div class="card-footer">
                         <a href="{{ url_for('performance_detail', perf_id=perf.id) }}"
-                            class="btn btn-sm btn-outline">View Details</a>
+                            class="btn btn-sm btn-outline">Guarda i Dettagli </a>
                     </div>
                 </div>
                 {% endif %}
@@ -214,7 +214,7 @@
             <!-- fine sezione di tutte le card -->
         </div>
         {% else %}
-        <p>No performances found matching your criteria. Try adjusting the filters!</p>
+        <p>Nessuna performance trovata che soddisfi i tuoi criteri di ricerca. Prova a modificare i filtri!</p>
         {% endif %}
     </div>
 </div>
