@@ -85,7 +85,7 @@
             </div>
             {% elif current_user.is_authenticated and current_user.role == 'organizer' %}
             <div class="mt-4 p-3 bg-light rounded">
-                <p>Organizers can browse performances but cannot purchase tickets.</p>
+                <p>Gli Organizzatori possono solamente navigare nelle performance ma non acquistare biglietti.</p>
             </div>
             {% elif not current_user.is_authenticated %}
             <div class="mt-4 p-3 bg-light rounded">
