@@ -229,9 +229,9 @@ def update_performance(performance_id, artist_name, day, start_time, duration_mi
     params.append(performance_id)
     
     try:
-        cursor.execute(query, tuple(params))
-        conn.commit()
-
+        cursor.execute(query, tuple(params)) # tuple convertes the params list to a tuple, which is an ordered immutable sequence of elements
+        conn.commit()                        # it is safer to use, the immutable nature of tuples prevents accidental modification of the parameters
+     
         return cursor.rowcount > 0
     except sqlite3.IntegrityError:
         conn.rollback()
