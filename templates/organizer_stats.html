@@ -4,11 +4,11 @@
 
 {% block content %}
 <div class="container mt-4">
-    <h2 style="font-family: 'Playfair Display', serif;">Festival Statistics</h2>
+    <h2 style="font-family: 'Playfair Display', serif;">Statistiche del Festival</h2>
     <hr>
 
-    <h3 style="font-family: 'Playfair Display', serif;" class="mt-4 mb-3">Daily Attendance Caps</h3>
-    <p class="lead">Monitor the number of tickets sold against the daily capacity for each day of the festival.</p>
+    <h3 style="font-family: 'Playfair Display', serif;" class="mt-4 mb-3">Affluenza per Giorno</h3>
+    <p class="lead">Monitora il numero di biglietti venduti per ciascun giorno.</p>
     {% if attendance_data %}
     <div class="row">
         {% for day_data in attendance_data %}
@@ -19,7 +19,7 @@
                 </div>
                 <div class="card-body">
                     <h3 class="card-title">{{ day_data.tickets_sold }} / {{ max_attendees }}</h3>
-                    <p class="card-text">Tickets Sold</p>
+                    <p class="card-text">Biglietti venduti</p>
                     <div class="progress" style="height: 25px;">
                         {% set percentage = (day_data.tickets_sold / max_attendees * 100) | round(1) if max_attendees >
                         0 else 0 %}
@@ -48,16 +48,16 @@
 
     <hr class="my-4">
 
-    <h3 style="font-family: 'Playfair Display', serif;" class="mt-4 mb-3">Ticket Holder Details</h3>
+    <h3 style="font-family: 'Playfair Display', serif;" class="mt-4 mb-3">Informazioni dei Partecipanti al Festival</h3>
     <div class="card mb-4">
         <div class="card-body">
-            <h5 class="card-title" style="font-family: 'Playfair Display', serif;">Filter Ticket Holders</h5>
+            <h5 class="card-title" style="font-family: 'Playfair Display', serif;">Filtra Info Partecipanti</h5>
             <form method="GET" action="{{ url_for('organizer_stats') }}">
                 <div class="row g-3 align-items-end">
                     <div class="col-md-8">
-                        <label for="ticket_type_filter" class="form-label">Ticket Type:</label>
+                        <label for="ticket_type_filter" class="form-label">Tipo di Biglietto:</label>
                         <select name="ticket_type_filter" id="ticket_type_filter" class="form-select">
-                            <option value="">All Ticket Types</option>
+                            <option value="">Tutti i Tipi di Biglietto</option>
                             {% for type_key, type_info in TICKET_TYPES_CONFIG.items() %}
                             <option value="{{ type_key }}" {% if selected_ticket_type==type_key %}selected{% endif %}>
                                 {{ type_info.name }}
