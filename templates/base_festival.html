@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="it-en">
+<html lang="it">
 
 <head>
     <meta charset="UTF-8">
@@ -99,7 +99,8 @@
                                 {% endif %}
                                 <!-- g_user_has_ticket is given by the context processor dictionary -->
                                 {% if current_user.role == 'participant' and not g_user_has_ticket %}
-                                <li><a class="dropdown-item" href="{{ url_for('buy_ticket') }}">Buy Ticket</a></li>
+                                <li><a class="dropdown-item" href="{{ url_for('buy_ticket') }}">Compra un Biglietto</a>
+                                </li>
                                 {% endif %}
                                 <li>
                                     <hr class="dropdown-divider">
@@ -155,46 +156,46 @@
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="mb-3">
-                                    <label for="modal_artist_name" class="form-label">Artist Name*</label>
+                                    <label for="modal_artist_name" class="form-label">Nome Artista*</label>
                                     <input type="text" class="form-control" id="modal_artist_name" name="artist_name"
                                         required>
                                 </div>
                                 <div class="mb-3">
-                                    <label for="modal_day" class="form-label">Day*</label>
+                                    <label for="modal_day" class="form-label">Giorno*</label>
                                     <select class="form-select" id="modal_day" name="day" required>
-                                        <option value="" disabled selected>Select Day...</option>
+                                        <option value="" disabled selected>Scegli Giorno...</option>
                                         {% for day_opt in FESTIVAL_DAYS %}
                                         <option value="{{ day_opt }}">{{ day_opt }}</option>
                                         {% endfor %}
                                     </select>
                                 </div>
                                 <div class="mb-3">
-                                    <label for="modal_start_time" class="form-label">Start Time (HH:MM)*</label>
+                                    <label for="modal_start_time" class="form-label">Ora d'inizio (HH:MM)*</label>
                                     <input type="time" class="form-control" id="modal_start_time" name="start_time"
                                         required>
                                 </div>
                                 <div class="mb-3">
-                                    <label for="modal_duration_minutes" class="form-label">Duration (minutes)*</label>
+                                    <label for="modal_duration_minutes" class="form-label">Durata (in minuti)*</label>
                                     <input type="number" class="form-control" id="modal_duration_minutes"
                                         name="duration_minutes" min="1" required>
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="mb-3">
-                                    <label for="modal_stage_name" class="form-label">Stage*</label>
+                                    <label for="modal_stage_name" class="form-label">Palco*</label>
                                     <select class="form-select" id="modal_stage_name" name="stage_name" required>
-                                        <option value="" disabled selected>Select Stage...</option>
+                                        <option value="" disabled selected>Scegli un palco...</option>
                                         {% for stage_opt in FESTIVAL_STAGES %}
                                         <option value="{{ stage_opt }}">{{ stage_opt }}</option>
                                         {% endfor %}
                                     </select>
                                 </div>
                                 <div class="mb-3">
-                                    <label for="modal_genre" class="form-label">Genre*</label>
+                                    <label for="modal_genre" class="form-label">Genere*</label>
                                     <input type="text" class="form-control" id="modal_genre" name="genre" required>
                                 </div>
                                 <div class="mb-3">
-                                    <label for="modal_image" class="form-label">Promotional Image*</label>
+                                    <label for="modal_image" class="form-label">Immagine Promozionale*</label>
                                     <input type="file" class="form-control" id="modal_image" name="image"
                                         accept="image/png, image/jpeg, image/gif" required>
                                     <!-- Non mostriamo l'immagine corrente qui perché è per una *nuova* performance -->
@@ -202,15 +203,16 @@
                             </div>
                         </div>
                         <div class="mb-3">
-                            <label for="modal_description" class="form-label">Description*</label>
+                            <label for="modal_description" class="form-label">Descrizione*</label>
                             <textarea class="form-control" id="modal_description" name="description" rows="4"
                                 required></textarea>
                         </div>
-                        <p><small>* Required fields. New performances are created as unpublished drafts.</small></p>
+                        <p><small>* Campi obbligatori. Le performance aggiunte sono create come bozze non
+                                pubblicate.</small></p>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn myclearbutton" data-bs-dismiss="modal">Close</button>
-                        <button type="submit" class="btn mybuttoncolors">Create Performance Draft</button>
+                        <button type="button" class="btn myclearbutton" data-bs-dismiss="modal">Chiudi</button>
+                        <button type="submit" class="btn mybuttoncolors">Crea bozza della performance</button>
                     </div>
                 </form>
             </div>
@@ -236,7 +238,7 @@
                 <path
                     d="M0 4.5A1.5 1.5 0 0 1 1.5 3h13A1.5 1.5 0 0 1 16 4.5V6a.5.5 0 0 1-.5.5 1.5 1.5 0 0 0 0 3 .5.5 0 0 1 .5.5v1.5a1.5 1.5 0 0 1-1.5 1.5h-13A1.5 1.5 0 0 1 0 11.5V10a.5.5 0 0 1 .5-.5 1.5 1.5 0 1 0 0-3A.5.5 0 0 1 0 6zM1.5 4a.5.5 0 0 0-.5.5v1.05a2.5 2.5 0 0 1 0 4.9v1.05a.5.5 0 0 0 .5.5h13a.5.5 0 0 0 .5-.5v-1.05a2.5 2.5 0 0 1 0-4.9V4.5a.5.5 0 0 0-.5-.5z" />
             </svg>
-            Compra unBiglietto!
+            Compra un biglietto!
         </a>
     </div>
     {% endif %}
