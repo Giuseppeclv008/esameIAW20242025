@@ -40,7 +40,7 @@
                 {% endif %}
                 {% if current_user.is_authenticated and current_user.role == 'organizer' and performance.organizer_id !=
                 current_user.id %}
-                <p class="mt-2 text-danger"><small>Questa Bozza è Stata Creata da: {{ performance.organizer_id
+                <p class="mt-2 text-danger"><small>Questa Bozza è Stata Creata dall'organizzatore numero: {{ performance.organizer_id
                         }}</small>
                     {% endif %}
                 <p class="mt-2 text-warning">Questa è una bozza ed è visibile solo agli organizzatori.</p>
@@ -61,7 +61,7 @@
                     }}
                 </li>
                 <li style="font-family: 'Playfair Display', serif;"><strong>Durata:</strong> {{
-                    performance.duration_minutes }} minutes</li>
+                    performance.duration_minutes }} minuti</li>
                 <li style="font-family: 'Playfair Display', serif;"><strong>Palco:</strong> {{ performance.stage_name }}
                 </li>
                 <li style="font-family: 'Playfair Display', serif;"><strong>Organized by:</strong> {{
